@@ -47,7 +47,7 @@ export function SupportUsFloat() {
               </p>
               <div className="bg-black/60 border border-gray-700 rounded-lg p-3 flex items-center gap-2">
                 <span className="text-[11px] text-gray-300 font-mono truncate flex-1">
-                  0x6aA99810cF60580621954F61108de33ad5422593
+                  0x6aA99810cF6058...3ad5422593
                 </span>
                 <button
                   onClick={copyAddress}
