@@ -11,7 +11,7 @@ export function SupportUsFloat() {
   const [copied, setCopied] = useState(false);
 
   const copyAddress = () => {
-    navigator.clipboard.writeText("0x1234567890abcdef1234567890abcdef12345678");
+    navigator.clipboard.writeText("0x6aA99810cF60580621954F61108de33ad5422593");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -47,7 +47,7 @@ export function SupportUsFloat() {
               </p>
               <div className="bg-black/60 border border-gray-700 rounded-lg p-3 flex items-center gap-2">
                 <span className="text-[11px] text-gray-300 font-mono truncate flex-1">
-                  0x1234567890abcdef...12345678
+                  0x6aA99810cF60580621954F61108de33ad5422593
                 </span>
                 <button
                   onClick={copyAddress}
