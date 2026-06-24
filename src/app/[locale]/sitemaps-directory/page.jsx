@@ -177,7 +177,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function SitemapsDirectoryPage({ params }) {
+export default async function SitemapsDirectoryPage({ params }) {
   // Guaranteed static structural fallback initialization logic for layout safety
     const {locale}=await params
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en"; 
