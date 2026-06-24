@@ -16,12 +16,12 @@ import {
   VALID_LOCALES,
   buildUrl,
   SITE_URL,
-  REVALIDATE_STATIC,
+  
 } from "@/lib/sitemap/configer";
 import { buildUrlsetXml, xmlResponse } from "@/lib/sitemap/xml";
 
 // ── ISR: regenerate every 24h ──────────────────────────────
-export const revalidate = REVALIDATE_STATIC;
+export const revalidate = 86400;
 
 // ── Static paths config ────────────────────────────────────
 // path: "" = homepage
