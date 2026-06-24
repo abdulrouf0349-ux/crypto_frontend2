@@ -76,8 +76,8 @@ export async function GET(request, { params }) {
   if (allItems.length === 0) return notFound();
 
   const entries = allItems.map((article) => {
-    const slug = article.slug;
-    const path = `/news/${slug}`;
+   const currentSlug = locale === "en" ? article.slug : article[`slug_${locale}`];    const slug = article.slug;
+    const path = `/news/${currentSlug}`;
 
     // If your API returns translation slugs per article, e.g.
     //   article.translations = { en: 'foo', ur: 'foo-ur', es: 'foo-es' }

@@ -1,5 +1,4 @@
 // app/sitemaps/events/[locale]/[chunk]/route.js
-// Serves: /sitemaps/events/en/1.xml etc.
 
 import { createChunkRoute } from "@/lib/sitemap/createChunkRoute";
 import { REVALIDATE_EVENTS, toApiLocale } from "@/lib/sitemap/configer";
@@ -20,18 +19,23 @@ async function fetchPage(locale, page) {
   }
 }
 
-function mapItem(item) {
-  return {
-    // your fetchEventBySlug implies route /events/[slug]
-    path: `/events/${item.slug}`,
-    lastModified: item.updated_at || item.created_at,
-    changeFrequency: "weekly",
-    priority: 0.6,
+// اب یہ فنکشن اپنے اندر locale اور item دونوں کو ہینڈل کرے گا
+function mapItemWithLocale(locale) {
+  return function(item) {
+    const currentSlug = locale === "en" ? item.slug : (item[`slug_${locale}`] || item.slug);   
+
+    return {
+      path: `/events/${currentSlug}`,
+      lastModified: item.updated_at || item.created_at,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    };
   };
 }
 
 export const { GET, revalidate } = createChunkRoute({
   fetchPage,
-  mapItem,
+  // یہاں ہم کرنٹ لوکیل کے ساتھ فنکشن پاس کر رہے ہیں
+  mapItem: (item, locale) => mapItemWithLocale(locale)(item),
   revalidate: REVALIDATE_EVENTS,
 });

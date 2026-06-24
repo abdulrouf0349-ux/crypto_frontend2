@@ -125,10 +125,19 @@ export function Navbar() {
   // Logic: 
   // 1. Agar root path ("/") hai, toh check karo exact match
   // 2. Agar koi aur link hai, toh check karo kya pathname us path se start ho raha hai
-  const isActive = link.path === "/" 
-    ? (pathname === "/" || LOCALE_CODES.some(c => pathname === `/${c}`))
-    : pathname.startsWith(localizedPath); 
-
+ const isActive =
+  link.path === "/"
+    ? (
+        pathname === "/" ||
+        LOCALE_CODES.some(c => pathname === `/${c}`) ||
+        pathname.includes("/news/")
+      )
+    : link.path === "/events"
+      ? (
+          pathname.startsWith(localizedPath) ||
+          pathname.includes("/events/")
+        )
+      : pathname.startsWith(localizedPath);
   return (
     <Link
       key={link.path}
@@ -201,9 +210,19 @@ export function Navbar() {
        
 {navLinks.map((link) => {
   const localizedPath = getLocalizedPath(link.path);
-  const isActive = link.path === "/" 
-    ? (pathname === "/" || LOCALE_CODES.some(c => pathname === `/${c}`))
-    : pathname.startsWith(localizedPath);
+  const isActive =
+  link.path === "/"
+    ? (
+        pathname === "/" ||
+        LOCALE_CODES.some(c => pathname === `/${c}`) ||
+        pathname.includes("/news/")
+      )
+    : link.path === "/events"
+      ? (
+          pathname.startsWith(localizedPath) ||
+          pathname.includes("/events/")
+        )
+      : pathname.startsWith(localizedPath);
 
   return (
     <Link

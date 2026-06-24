@@ -1,28 +1,16 @@
 // app/sitemap.xml/route.js
-//
-// ⭐ THIS IS THE ONLY URL YOU SUBMIT TO GOOGLE SEARCH CONSOLE:
-//      https://cryptonewstrend.com/sitemap.xml
-//
-// It is a REAL <sitemapindex> (unlike Next.js's built-in generateSitemaps,
-// which only outputs flat numbered sitemaps with no master index — see
-// https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap).
-//
-// HOW IT AVOIDS REPEATED API CALLS:
-// This route is cached for `revalidate` seconds (1 hour below). During that
-// hour, no matter how many times Googlebot / Bingbot / GPTBot / ClaudeBot
-// request /sitemap.xml, Next.js serves the cached HTML — your "count" API
-// calls below run AT MOST once per hour, not once per crawl.
-//
-// It calls each API ONCE per locale, asking only for page=1 (which every
-// one of your existing fetch functions already supports) and reads the
-// pagination metadata to know the total item count. That single page=1
-// call is itself cached/deduped by `next: { revalidate }`, matching the
-// cache window your real pages already use — so this index doesn't add
-// any new load beyond what your pages already generate.
-
-import { VALID_LOCALES,REVALIDATE_STATIC,REVALIDATE_INDEX, REVALIDATE_NEWS,REVALIDATE_ICO,REVALIDATE_EVENTS,REVALIDATE_GLOSSARY,REVALIDATE_COIN_ANALYSIS,REVALIDATE_WHALES, SITE_URL, chunkCount } from "@/lib/sitemap/configer";
-import { buildSitemapIndexXml, xmlResponse } from "@/lib/sitemap/xml";
-
+import { NextResponse } from "next/server";
+import { 
+  VALID_LOCALES, 
+  REVALIDATE_INDEX, 
+  REVALIDATE_NEWS, 
+  REVALIDATE_ICO, 
+  REVALIDATE_EVENTS, 
+  REVALIDATE_COIN_ANALYSIS, 
+  REVALIDATE_WHALES, 
+  SITE_URL, 
+  chunkCount 
+} from "@/lib/sitemap/configer";
 
 const BASE_API = process.env.NEXT_PUBLIC_API_BASE || "https://crytponews.fun";
 
@@ -31,7 +19,8 @@ async function safeJson(url, options) {
     const res = await fetch(url, options);
     if (!res.ok) return null;
     return await res.json();
-  } catch {
+  } catch (error) {
+    console.error(`Sitemap master index failed fetching target count node: ${url}`, error);
     return null;
   }
 }
@@ -98,15 +87,14 @@ async function countFor(type, locale) {
 const CONTENT_TYPES = ["news", "whales", "ico", "events", "coin-analysis"];
 
 export async function GET() {
-  const now = new Date();
-  const entries = [
-    // Static pages sitemap — always included, no API call needed
-    { url: `${SITE_URL}/sitemaps/static.xml`, lastModified: now },
+  const now = new Date().toISOString();
+  
+  // 1. Array with static sitemap declaration
+  const sitemapUrls = [
+    `${SITE_URL}/sitemaps/static.xml`
   ];
 
-  // Fan out: for every (contentType x locale) pair, get the count, in parallel.
-  // 5 types x 8 locales = 40 lightweight calls, ONCE PER HOUR (not per crawl),
-  // each one reusing the exact same cached page=1 request your real pages use.
+  // 2. Map out data operations concurrently 
   const jobs = [];
   for (const type of CONTENT_TYPES) {
     for (const locale of VALID_LOCALES) {
@@ -122,14 +110,31 @@ export async function GET() {
 
   const results = await Promise.all(jobs);
 
+  // 3. Populate dynamic nested chunk structures
   for (const { type, locale, chunks } of results) {
     for (let i = 1; i <= chunks; i++) {
-      entries.push({
-        url: `${SITE_URL}/sitemaps/${type}/${locale}/${i}.xml`,
-        lastModified: now,
-      });
+      sitemapUrls.push(`${SITE_URL}/sitemaps/${type}/${locale}/${i}.xml`);
     }
   }
 
-  return xmlResponse(buildSitemapIndexXml(entries));
+  // 4. Construct high-compliance standard sitemapindex XML string natively
+  const sitemapIndexItems = sitemapUrls
+    .map((url) => `  <sitemap>
+    <loc>${url}</loc>
+    <lastmod>${now}</lastmod>
+  </sitemap>`)
+    .join("\n");
+
+  const sitemapIndexXml = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapIndexItems}
+</sitemapindex>`;
+
+  // 5. Direct strict response output with secure custom header blocks
+  return new NextResponse(sitemapIndexXml, {
+    headers: {
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": `public, s-maxage=${REVALIDATE_INDEX}, stale-while-revalidate=600`,
+    },
+  });
 }

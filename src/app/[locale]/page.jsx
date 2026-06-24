@@ -326,7 +326,7 @@ export default async function HomePage({ params }) {
                 dateModified: featured.date || collectionDateModified,
                 isAccessibleForFree: true,
                 author: {
-                  "@id": `${SITE_URL}/#editorial-team`,
+                  "@id": `${SITE_URL}/#team`,
                 },
                 publisher: {
                   "@id": `${SITE_URL}/#organization`,

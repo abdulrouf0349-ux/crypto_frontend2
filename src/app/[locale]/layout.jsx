@@ -200,7 +200,7 @@ function getStructuredData(locale) {
           "Global cryptocurrency news platform covering Bitcoin, Ethereum, altcoins, blockchain technology, Web3, DeFi and crypto market analysis.",
         name: SITE_NAME,
         founder: {
-          "@id": `${SITE_URL}/#editorial-team`,
+          "@id": `${SITE_URL}/#team`,
         },
         url: SITE_URL,
         foundingDate: "2025",
@@ -275,7 +275,7 @@ function getStructuredData(locale) {
       // ── 4. Editorial team person
       {
         "@type": "Person",
-        "@id": `${SITE_URL}/#editorial-team`,
+        "@id": `${SITE_URL}/#team`,
         name: "CryptoNewsTrend Editorial Team",
         url: `${SITE_URL}/about`,
         worksFor: {
