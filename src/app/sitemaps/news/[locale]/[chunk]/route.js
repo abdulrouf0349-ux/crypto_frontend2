@@ -17,7 +17,7 @@
 // translation — which is acceptable but not optimal. Tell me if your
 // /api/getdata response includes translation slugs and I'll wire it in.
 
-import { VALID_LOCALES, URLS_PER_CHUNK, REVALIDATE_NEWS, buildUrl, toApiLocale } from "@/lib/sitemap/configer";
+import { VALID_LOCALES, URLS_PER_CHUNK, buildUrl, toApiLocale } from "@/lib/sitemap/configer";
 import { buildUrlsetXml, xmlResponse } from "@/lib/sitemap/xml";
 import { notFound } from "next/navigation";
 
@@ -42,7 +42,7 @@ async function fetchNewsPage(locale, page) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ news: "all" }),
-      next: { revalidate: REVALIDATE_NEWS, tags: [`news-${locale}`] },
+      next: { revalidate: 300, tags: [`news-${locale}`] },
     });
     if (!res.ok) return { items: [] };
     const data = await res.json();

@@ -1,7 +1,7 @@
 // app/sitemaps/events/[locale]/[chunk]/route.js
 
 import { createChunkRoute } from "@/lib/sitemap/createChunkRoute";
-import { REVALIDATE_EVENTS, toApiLocale } from "@/lib/sitemap/configer";
+import {  toApiLocale } from "@/lib/sitemap/configer";
 
 const BASE_API = process.env.NEXT_PUBLIC_API_BASE || "https://crytponews.fun";
 
@@ -9,7 +9,7 @@ async function fetchPage(locale, page) {
   try {
     const res = await fetch(
       `${BASE_API}/api/get-events/${locale}/?page=${page}`,
-      { next: { revalidate: REVALIDATE_EVENTS, tags: ["events", `${locale}-events`] } }
+      { next: { revalidate: 43200, tags: ["events", `${locale}-events`] } }
     );
     if (!res.ok) return [];
     const result = await res.json();
@@ -37,5 +37,5 @@ export const { GET, revalidate } = createChunkRoute({
   fetchPage,
   // یہاں ہم کرنٹ لوکیل کے ساتھ فنکشن پاس کر رہے ہیں
   mapItem: (item, locale) => mapItemWithLocale(locale)(item),
-  revalidate: REVALIDATE_EVENTS,
+  revalidate: 43200,
 });

@@ -2,7 +2,6 @@
 // Serves: /sitemaps/ico/en/1.xml etc.
 
 import { createChunkRoute } from "@/lib/sitemap/createChunkRoute";
-import { REVALIDATE_ICO } from "@/lib/sitemap/configer";
 
 const BASE_API = process.env.NEXT_PUBLIC_API_BASE || "https://crytponews.fun";
 
@@ -10,7 +9,7 @@ async function fetchPage(locale, page) {
   try {
     const res = await fetch(
       `${BASE_API}/api/ico_data/${locale}/?status=Active&page=${page}`,
-      { next: { revalidate: REVALIDATE_ICO, tags: [`ico-${locale}`] } }
+      { next: { revalidate: 43200, tags: [`ico-${locale}`] } }
     );
     if (!res.ok) return [];
     const result = await res.json();
@@ -33,5 +32,5 @@ function mapItem(item) {
 export const { GET, revalidate } = createChunkRoute({
   fetchPage,
   mapItem,
-  revalidate: REVALIDATE_ICO,
+  revalidate: 43200,
 });

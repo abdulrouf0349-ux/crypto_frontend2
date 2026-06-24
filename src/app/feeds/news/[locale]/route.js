@@ -12,7 +12,7 @@ import { notFound } from "next/navigation";
 import {
   VALID_LOCALES,
   FEED_ITEM_LIMIT,
-  REVALIDATE_NEWS_FEED,
+  
   buildUrl,
   buildFeedUrl,
   toApiLocale,
@@ -89,4 +89,4 @@ export async function GET(request, { params }) {
   return rssResponse(xml);
 }
 
-export const revalidate = REVALIDATE_NEWS_FEED;
+export const revalidate = 300;

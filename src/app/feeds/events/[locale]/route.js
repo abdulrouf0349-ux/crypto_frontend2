@@ -6,7 +6,7 @@
 // instead of the sitemap chunk factory.
 
 import { createFeedRoute } from "@/lib/rss/createFeedRoute";
-import { REVALIDATE_EVENTS_FEED, toApiLocale } from "@/lib/rss/configer";
+import {  toApiLocale } from "@/lib/rss/configer";
 
 const BASE_API = process.env.NEXT_PUBLIC_API_BASE || "https://crytponews.fun";
 
@@ -61,5 +61,5 @@ export const { GET, revalidate } = createFeedRoute({
   mapItem,
   feedType: "events",
   channelMeta,
-  revalidate: REVALIDATE_EVENTS_FEED,
+  revalidate: 43200,
 });

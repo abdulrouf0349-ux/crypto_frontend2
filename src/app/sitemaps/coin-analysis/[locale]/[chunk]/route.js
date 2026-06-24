@@ -3,7 +3,6 @@
 // Also covers your /glossary listing since it shares the fetchCoins endpoint.
 
 import { createChunkRoute } from "@/lib/sitemap/createChunkRoute";
-import { REVALIDATE_COIN_ANALYSIS } from "@/lib/sitemap/configer";
 
 const BASE_API = process.env.NEXT_PUBLIC_API_BASE || "https://crytponews.fun";
 
@@ -39,5 +38,5 @@ function mapItem(item) {
 export const { GET, revalidate } = createChunkRoute({
   fetchPage,
   mapItem,
-  revalidate: REVALIDATE_COIN_ANALYSIS,
+  revalidate: 86400,
 });

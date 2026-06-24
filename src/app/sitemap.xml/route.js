@@ -2,12 +2,6 @@
 import { NextResponse } from "next/server";
 import { 
   VALID_LOCALES, 
-  REVALIDATE_INDEX, 
-  REVALIDATE_NEWS, 
-  REVALIDATE_ICO, 
-  REVALIDATE_EVENTS, 
-  REVALIDATE_COIN_ANALYSIS, 
-  REVALIDATE_WHALES, 
   SITE_URL, 
   chunkCount 
 } from "@/lib/sitemap/configer";
@@ -47,35 +41,35 @@ async function countFor(type, locale) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ news: "all" }),
-        next: { revalidate: REVALIDATE_NEWS, tags: [`news-${locale}`] },
+        next: { revalidate: 300, tags: [`news-${locale}`] },
       });
       return readTotal(data);
     }
     case "whales": {
       const data = await safeJson(
         `${BASE_API}/api/whales_alert/${locale}/?page=1`,
-        { next: { revalidate: REVALIDATE_WHALES, tags: [`whales-${locale}`] } }
+        { next: { revalidate: 3600, tags: [`whales-${locale}`] } }
       );
       return readTotal(data);
     }
     case "ico": {
       const data = await safeJson(
         `${BASE_API}/api/ico_data/${locale}/?status=Active&page=1`,
-        { next: { revalidate: REVALIDATE_ICO, tags: [`ico-${locale}`] } }
+        { next: { revalidate: 43200, tags: [`ico-${locale}`] } }
       );
       return readTotal(data);
     }
     case "events": {
       const data = await safeJson(
         `${BASE_API}/api/get-events/${locale}/?page=1`,
-        { next: { revalidate: REVALIDATE_EVENTS, tags: ["events", `${locale}-events`] } }
+        { next: { revalidate: 43200, tags: ["events", `${locale}-events`] } }
       );
       return readTotal(data);
     }
     case "coin-analysis": {
       const data = await safeJson(
         `${BASE_API}/api/coins?page=1&search=&type=all&locale=${locale}`,
-        { next: { revalidate: REVALIDATE_COIN_ANALYSIS, tags: ["glossary", `${locale}-glossary-all`] } }
+        { next: { revalidate: 86400, tags: ["glossary", `${locale}-glossary-all`] } }
       );
       return readTotal(data);
     }
@@ -134,7 +128,7 @@ ${sitemapIndexItems}
   return new NextResponse(sitemapIndexXml, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": `public, s-maxage=${REVALIDATE_INDEX}, stale-while-revalidate=600`,
+      "Cache-Control": `public, s-maxage=${3600}, stale-while-revalidate=600`,
     },
   });
 }
