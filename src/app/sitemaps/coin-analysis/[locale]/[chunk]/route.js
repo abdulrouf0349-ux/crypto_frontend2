@@ -29,7 +29,7 @@ async function fetchPage(locale, page) {
 function mapItem(item) {
   return {
     // your generateStaticParams comment implies /coin-analysis/[slug]
-    path: `/coin-analysis/${item.slug}`,
+    path: `/glossary/${item.slug}`,
     lastModified: item.updated_at || item.created_at,
     changeFrequency: "weekly",
     priority: 0.6,

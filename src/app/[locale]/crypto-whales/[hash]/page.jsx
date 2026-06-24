@@ -29,18 +29,25 @@ const BASE_URL      = process.env.NEXT_PUBLIC_API_BASE || "https://crytponews.fu
 const toApiLocale = (locale) => (locale === "zh" ? "zh-cn" : locale);
 
 /** Canonical URL — English has no locale prefix */
+
+
+// ✅ Already correct — buildCanonical uses raw locale "zh", not toApiLocale
 const buildCanonical = (locale, hash) =>
   locale === "en"
     ? `${SITE_URL}/crypto-whales/${hash}`
     : `${SITE_URL}/${locale}/crypto-whales/${hash}`;
+// → /zh/crypto-whales/hash  ✅ (not /zh-cn/) 
+
 
 /** hreflang map for all supported locales */
+// ✅ FIXED
 const buildHreflang = (hash) =>
   Object.fromEntries([
     ...VALID_LOCALES.map((loc) => [
-      loc === "zh" ? "zh-Hans" : loc,
+      loc,                          // ← always use exact locale key (en, ur, zh, etc.)
       buildCanonical(loc, hash),
     ]),
+    ["zh-Hans", buildCanonical("zh", hash)],  // ← add zh-Hans as EXTRA alias
     ["x-default", buildCanonical("en", hash)],
   ]);
 
@@ -152,8 +159,9 @@ export async function generateMetadata({ params }) {
   // If blockchain="BTC" and coin="BTC" → "BTC Whale Alert: 1000 BTC BTC Transfer" ❌
   // New: coin shown only when it differs from blockchain label
   const coinSuffix  = coin && coin.toUpperCase() !== blockchain.toUpperCase() ? ` ${coin}` : "";
-  const seoTitle    = `${amountFull}${coinSuffix} ${blockchain} Whale Alert — ${new Date(publishedAt).getFullYear()}`;
-
+// Fallback: use shortened hash if amountFull is missing
+const displayAmount = amountFull || `TX ${hash.slice(0, 8)}`;
+const seoTitle = `${displayAmount}${coinSuffix} ${blockchain} Whale Alert — ${new Date(publishedAt).getFullYear()}`;
   // ── OG image — use tx image or fallback OG ────────────────
   const ogImage = tx.image_url || `${SITE_URL}/og-whale-tracker.png`;
 

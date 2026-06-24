@@ -219,7 +219,7 @@ const LOCALIZED_ADVERTISE = {
 };
 
 export async function generateMetadata({ params }) {
-  const locale = params?.locale || "en";
+  const {locale} =await params || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
 
   const canonical =
@@ -254,8 +254,8 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function AdvertisePage({ params }) {
-  const locale = params?.locale || "en";
+export default async function AdvertisePage({ params }) {
+  const {locale} =await params || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const prefix = currentLocale === "en" ? "" : `/${currentLocale}`;
@@ -391,13 +391,13 @@ export default function AdvertisePage({ params }) {
           <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.compTitle}</h3>
             <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
-              <Link href={`${prefix}/about`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+              <Link href={`${prefix}/about-us`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                 About Our Company
               </Link>
               <Link href={`${prefix}/contact`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                 Contact Editorial Desk
               </Link>
-              <Link href={`${prefix}/terms-and-conditions`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+              <Link href={`${prefix}/terms`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                 Terms & Conditions
               </Link>
               <Link href={`${prefix}/privacy-policy`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">

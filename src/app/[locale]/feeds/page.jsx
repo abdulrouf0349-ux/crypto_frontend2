@@ -124,7 +124,7 @@ const LOCALIZED_FEEDS_TEXT = {
 
 // Metadata mapping generator
 export async function generateMetadata({ params }) {
-  const locale = params?.locale || "en";
+  const {locale} = params || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const t = LOCALIZED_FEEDS_TEXT[currentLocale] || LOCALIZED_FEEDS_TEXT["en"];
 
@@ -141,8 +141,8 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function FeedsDirectoryPage({ params }) {
-  const locale = params?.locale || "en";
+export  default async function FeedsDirectoryPage({ params }) {
+  const {locale} =await params || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const t = LOCALIZED_FEEDS_TEXT[currentLocale] || LOCALIZED_FEEDS_TEXT["en"];

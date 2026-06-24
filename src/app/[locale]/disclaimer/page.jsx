@@ -205,8 +205,8 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function DisclaimerPage({ params }) {
-  const locale = params?.locale || "en";
+export default async function DisclaimerPage({ params }) {
+  const {locale} =await params || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const prefix = currentLocale === "en" ? "" : `/${currentLocale}`;
@@ -310,13 +310,13 @@ export default function DisclaimerPage({ params }) {
           <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
             <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-4">{t.compTitle}</h3>
             <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
-              <Link href={`${prefix}/terms-and-conditions`} className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">
+              <Link href={`${prefix}/terms`} className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">
                 Terms & Conditions
               </Link>
               <Link href={`${prefix}/privacy-policy`} className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">
                 Privacy Policy
               </Link>
-              <Link href={`${prefix}/about`} className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">
+              <Link href={`${prefix}/about-us`} className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">
                 About Platform
               </Link>
             </nav>

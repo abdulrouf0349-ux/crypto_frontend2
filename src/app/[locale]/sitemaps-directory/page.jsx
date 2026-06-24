@@ -163,8 +163,8 @@ const LOCALIZED_SITEMAPS_TEXT = {
 
 export async function generateMetadata({ params }) {
   // Direct default-fall through fallback initialization
-  const rawLocale = params?.locale;
-  const currentLocale = (rawLocale && VALID_LOCALES.includes(rawLocale)) ? rawLocale : "en";
+    const {locale}=await params
+  const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en"; 
   const t = LOCALIZED_SITEMAPS_TEXT[currentLocale];
 
   return {
@@ -179,8 +179,8 @@ export async function generateMetadata({ params }) {
 
 export default function SitemapsDirectoryPage({ params }) {
   // Guaranteed static structural fallback initialization logic for layout safety
-  const rawLocale = params?.locale;
-  const currentLocale = (rawLocale && VALID_LOCALES.includes(rawLocale)) ? rawLocale : "en";
+    const {locale}=await params
+  const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en"; 
   
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const t = LOCALIZED_SITEMAPS_TEXT[currentLocale];

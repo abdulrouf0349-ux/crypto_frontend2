@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
         hostname: "icodrops.com",
         pathname: "/**",
       },
+      {
+        protocol: 'https',
+        hostname: 'coin-images.coingecko.com',
+        pathname: '/**',
+      },
     ],
   },
 };

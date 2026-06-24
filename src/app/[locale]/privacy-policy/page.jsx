@@ -96,7 +96,8 @@ function buildUrl(locale, path = "privacy-policy") {
 }
 
 export async function generateMetadata({ params }) {
-  const currentLocale = VALID_LOCALES.includes(params.locale) ? params.locale : "en";
+  const {locale}=await params
+  const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const canonicalUrl = buildUrl(currentLocale);
 
   const languages = {};
@@ -123,8 +124,9 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function PrivacyPolicyPage({ params }) {
-  const currentLocale = VALID_LOCALES.includes(params.locale) ? params.locale : "en";
+export default async function PrivacyPolicyPage({ params }) {
+  const {locale}=await params
+  const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const currentLangCode = SCHEMA_LANGUAGE[currentLocale];
   const pageUrl = buildUrl(currentLocale);
   const isRtl = ["ur", "ar"].includes(currentLocale);
@@ -284,19 +286,19 @@ export default function PrivacyPolicyPage({ params }) {
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t.compTitle}</h3>
           <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
-            <Link href={`${prefix}/about`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+            <Link href={`${prefix}/about-us`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
               {t.linkAbout}
             </Link>
             <Link href={`${prefix}/contact`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
               {t.linkContact}
             </Link>
-            <Link href={`${prefix}/terms-and-conditions`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+            <Link href={`${prefix}/terms`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
               {t.linkTerms}
             </Link>
             <Link href={`${prefix}/editorial-policy`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
               {t.linkEditorial}
             </Link>
-            <Link href={`${prefix}/corrections-policy`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+            <Link href={`${prefix}/privacy-policy`} className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
               {t.linkCorrections}
             </Link>
           </nav>

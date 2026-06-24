@@ -260,7 +260,7 @@ const POLICY_DICT = {
 };
 
 export async function generateMetadata({ params }) {
-  const { locale: raw } = await params;
+  const { locale: raw } = await params || "en";
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const currentMeta = META[locale] || META.en;
 
@@ -303,7 +303,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function EditorialPolicyPage({ params }) {
-  const { locale: raw } = await params;
+  const { locale: raw } = await params || "en";
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const isRtl = ["ur", "ar"].includes(locale);
   

@@ -643,12 +643,11 @@ export default function NewsArticle({ article, locale, related = [], readTime, a
                 : "Home"}
             </Link>
             <ChevronRight className={`w-3 h-3 ${isRtl ? "rotate-180" : ""}`} />
-            <Link
-              href={currentLocale === "en" ? "/news" : `/${currentLocale}/news`}
+            <span
               className="hover:text-foreground transition-colors"
             >
               {newsLabel}
-            </Link>
+            </span>
             <ChevronRight className={`w-3 h-3 ${isRtl ? "rotate-180" : ""}`} />
             <span className="text-purple-500">{article.category}</span>
             <ChevronRight className={`w-3 h-3 ${isRtl ? "rotate-180" : ""}`} />
@@ -746,18 +745,14 @@ export default function NewsArticle({ article, locale, related = [], readTime, a
           <div className="flex flex-wrap gap-2 items-center pt-6 border-t border-border mb-14">
             <Tag className="w-4 h-4 text-muted-foreground" />
             {keywords.map((kw) => (
-              <Link
+              <span
                 key={kw}
-                href={
-                  currentLocale === "en"
-                    ? `/tag/${slugify(kw)}`
-                    : `/${currentLocale}/tag/${slugify(kw)}`
-                }
+                
                 className="px-3 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground hover:bg-purple-600 hover:text-white transition-colors"
                 rel="tag"
               >
                 #{kw}
-              </Link>
+              </span>
             ))}
           </div>
 

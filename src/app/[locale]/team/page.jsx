@@ -204,7 +204,7 @@ export default async function TeamPage({ params }) {
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-none tracking-tight">
-              <span className="text-white">Our</span>
+              <span className="text-gray-500 dark:text-white">Our</span>
               <span className="text-orange-500"> Team</span>
             </h1>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">

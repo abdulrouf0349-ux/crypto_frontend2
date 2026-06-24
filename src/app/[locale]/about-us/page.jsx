@@ -254,7 +254,7 @@ const ABOUT_DICT = {
 };
 
 export async function generateMetadata({ params }) {
-  const { locale: raw } = await params;
+  const { locale: raw } = await params || "en";
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const currentMeta = META[locale] || META.en;
 
@@ -316,7 +316,7 @@ const LANGS = [
   { code: "ZH", name: "中文"     },
 ];
 export default async function AboutPage({ params }) {
-  const { locale: raw } = await params;
+  const { locale: raw } = await params || "en";
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const isRtl  = ["ur", "ar"].includes(locale);
   const prefix = locale === "en" ? "" : `/${locale}`;

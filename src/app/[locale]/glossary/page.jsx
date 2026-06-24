@@ -67,9 +67,11 @@ export function generateStaticParams() {
 
 // ─── Metadata ────────────────────────────────────────────────────────────────
 export async function generateMetadata({ params, searchParams }) {
-  const locale = VALID_LOCALES.includes(params.locale) ? params.locale : "en";
-  const canonical = buildCanonical(locale);
-  const { title, description, keywords } = getCopy(locale);
+  const {locale}=await params
+  const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
+  // const locale = VALID_LOCALES.includes(params.locale) ? params.locale : "en";
+  const canonical = buildCanonical(currentLocale);
+  const { title, description, keywords } = getCopy(currentLocale);
   const ogImage = `${SITE_URL}/crypto-glossary.png`;
 
   const alternateLanguages = { "x-default": buildCanonical("en") };
@@ -105,7 +107,7 @@ export async function generateMetadata({ params, searchParams }) {
       siteName: SITE_NAME,
       title,
       description,
-      locale: OG_LOCALE_MAP[locale] || "en_US",
+      locale: OG_LOCALE_MAP[currentLocale] || "en_US",
       images: [
         {
           url: ogImage,
@@ -127,7 +129,9 @@ export async function generateMetadata({ params, searchParams }) {
 
 // ─── Page Component ───────────────────────────────────────────────────────────
 export default async function GlossaryPage({ params, searchParams }) {
-  const locale = VALID_LOCALES.includes(params.locale) ? params.locale : "en";
+  // const locale = VALID_LOCALES.includes(params.locale) ? params.locale : "en";
+  const {locale}=await params
+  const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en"; 
 
   // Safer slug helper
   const getSlug = (coin) =>
@@ -142,7 +146,7 @@ export default async function GlossaryPage({ params, searchParams }) {
   let totalItems = 0;
 
   try {
-    const result = await fetchCoins(page, search, type, locale);
+    const result = await fetchCoins(page, search, type, currentLocale);
 
     if (result) {
       initialData = result.data || [];
@@ -153,8 +157,8 @@ export default async function GlossaryPage({ params, searchParams }) {
     console.error("Glossary fetch error:", e);
   }
 
-  const canonical = buildCanonical(locale);
-  const { title, description } = getCopy(locale);
+  const canonical = buildCanonical(currentLocale);
+  const { title, description } = getCopy(currentLocale);
 
   // ─── JSON-LD Structured Data ─────────────────────────────────────────────
   const jsonLd = {
@@ -194,7 +198,7 @@ export default async function GlossaryPage({ params, searchParams }) {
         name: "Crypto Glossary",
         url: canonical,
         numberOfTerms: totalItems || initialData.length,
-        inLanguage: locale,
+        inLanguage: currentLocale,
         keywords: "crypto, blockchain, defi, nft, web3 glossary",
         about: [
           { "@type": "Thing", name: "Cryptocurrency" },
@@ -206,11 +210,11 @@ export default async function GlossaryPage({ params, searchParams }) {
           const slug = getSlug(coin) || "unknown";
           return {
             "@type": "DefinedTerm",
-            "@id": `${SITE_URL}/${locale}/glossary/${slug}#term`,
+            "@id": `${SITE_URL}/${currentLocale}/glossary/${slug}#term`,
             name: coin.name,
             termCode: coin.symbol || "",
             description: (coin.description || "").slice(0, 180),
-            url: `${SITE_URL}/${locale}/glossary/${slug}`,
+            url: `${SITE_URL}/${currentLocale}/glossary/${slug}`,
             inDefinedTermSet: {
               "@id": `${canonical}#glossary`,
             },
@@ -223,14 +227,14 @@ export default async function GlossaryPage({ params, searchParams }) {
         "@id": `${canonical}#list`,
         itemListOrder: "https://schema.org/ItemListOrderAscending",
         numberOfItems: initialData.length,
-        inLanguage: locale,   // ✅ Added inLanguage
+        inLanguage: currentLocale,   // ✅ Added inLanguage
         itemListElement: initialData.slice(0, 10).map((coin, i) => {
           const slug = getSlug(coin);
           return {
             "@type": "ListItem",
             position: i + 1,
             name: coin.name,
-            url: `${SITE_URL}/${locale}/glossary/${slug}`,
+            url: `${SITE_URL}/${currentLocale}/glossary/${slug}`,
           };
         }),
       },
@@ -281,7 +285,7 @@ export default async function GlossaryPage({ params, searchParams }) {
       <CoinGlossary
         initialData={initialData}
         initialTotalPages={initialTotalPages}
-        locale={locale}
+        locale={currentLocale}
       />
     </>
   );

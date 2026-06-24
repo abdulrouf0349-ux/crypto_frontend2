@@ -73,15 +73,18 @@ export async function generateMetadata({ params }) {
   const description = (article.excerpt || article.description || "").slice(0, 160);
 
   // ✅ hreflang alternates
-  const languages = VALID_LOCALES.reduce((acc, l) => {
-    const lSlug = article[`slug_${l}`] || article.slug;
-    acc[l] =
-      l === "en"
-        ? `${SITE_URL}/news/${lSlug}`
-        : `${SITE_URL}/${l}/news/${lSlug}`;
-    return acc;
-  }, {});
-  languages["x-default"] = `${SITE_URL}/news/${article.slug_en || article.slug}`;
+ // In generateMetadata — use localized slug per locale
+// ✅ CORRECT FIX
+const languages = VALID_LOCALES.reduce((acc, l) => {
+  const lSlug = article[`slug_${l}`] || article.slug_en || article.slug;
+  acc[l] = l === "en"           // ← always use exact locale as key
+    ? `${SITE_URL}/news/${lSlug}`
+    : `${SITE_URL}/${l}/news/${lSlug}`;
+  return acc;
+}, {});
+// Add zh-Hans as EXTRA alias only
+languages["zh-Hans"] = `${SITE_URL}/zh/news/${article[`slug_zh`] || article.slug_en || article.slug}`;
+languages["x-default"] = `${SITE_URL}/news/${article.slug_en || article.slug}`;
 
   return {
     title: article.title,
@@ -311,19 +314,11 @@ export default async function NewsSlugPage({ params }) {
             name: BREADCRUMB_HOME[locale] || "Home",
             item: locale === "en" ? SITE_URL : `${SITE_URL}/${locale}`,
           },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: BREADCRUMB_NEWS[locale] || "News",
-            item:
-              locale === "en"
-                ? `${SITE_URL}/`
-                : `${SITE_URL}/${locale}/news`,
-          },
+         
      
           {
             "@type": "ListItem",
-            position: 3,
+            position: 2,
             name: article.title.slice(0, 80),
             item: canonicalUrl,
           },

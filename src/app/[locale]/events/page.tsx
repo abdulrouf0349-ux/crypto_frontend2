@@ -32,14 +32,14 @@ const OG_LOCALE_MAP: Record<string, string> = {
 
 // ─── Locale-specific content ──────────────────────────────────────────────────
 const META_TITLES: Record<string, string> = {
-  en: "Crypto Events 2026 – Conferences, Meetups & Summits | CryptoNews Trend",
-  ur: "کرپٹو ایونٹس 2026 – کانفرنسز اور میٹ اپس | CryptoNews Trend",
-  ar: "فعاليات التشفير 2026 – مؤتمرات ولقاءات | CryptoNews Trend",
-  de: "Krypto Events 2026 – Konferenzen & Meetups | CryptoNews Trend",
-  es: "Eventos Crypto 2026 – Conferencias y Meetups | CryptoNews Trend",
-  fr: "Événements Crypto 2026 – Conférences & Meetups | CryptoNews Trend",
-  ru: "Крипто События 2026 – Конференции и Встречи | CryptoNews Trend",
-  zh: "2026加密货币活动 – 会议与聚会 | CryptoNews Trend",
+  en: "Crypto Events 2026 – Conferences, Meetups & Summits",
+  ur: "کرپٹو ایونٹس 2026 – کانفرنسز اور میٹ اپس ",
+  ar: "فعاليات التشفير 2026 – مؤتمرات ولقاءات ",
+  de: "Krypto Events 2026 – Konferenzen & Meetups",
+  es: "Eventos Crypto 2026 – Conferencias y Meetups",
+  fr: "Événements Crypto 2026 – Conférences & Meetups",
+  ru: "Крипто События 2026 – Конференции и Встречи",
+  zh: "2026加密货币活动 – 会议与聚会",
 };
 
 const META_DESCRIPTIONS: Record<string, string> = {

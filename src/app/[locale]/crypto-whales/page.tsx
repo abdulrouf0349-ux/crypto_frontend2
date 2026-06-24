@@ -21,7 +21,7 @@ import Script from "next/script";
 
 // ─── Constants ──────────────────────────────────────────────
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cryptonewstrend.com";
-const PAGE_PATH = "/whale-tracker";
+const PAGE_PATH = "/crypto-whales";
 
 // ─── Dynamic Metadata (locale-aware, Google 2026 compliant) ─
 interface PageProps {
@@ -31,7 +31,7 @@ interface PageProps {
 export async function generateMetadata(
   { params }: PageProps
 ): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale } = await params || "en";
 
   const titles: Record<string, string> = {
     en: "Crypto Whale Tracker — Live Whale Alerts & Large Transactions 2026",
@@ -65,6 +65,8 @@ export async function generateMetadata(
       canonical,
       languages: {
         en:          `${SITE_URL}${PAGE_PATH}`,
+        de: `${SITE_URL}/de${PAGE_PATH}`,  // ← add
+       ru: `${SITE_URL}/ru${PAGE_PATH}`,
         // FIX 2: fr now correctly points to /fr path (was pointing to en)
         fr:          `${SITE_URL}/fr${PAGE_PATH}`,
         ur:          `${SITE_URL}/ur${PAGE_PATH}`,
@@ -128,7 +130,7 @@ export async function generateMetadata(
 
 // ─── Page Component ─────────────────────────────────────────
 export default async function WhaleTrackerPage({ params }: PageProps) {
-  const { locale } = await params;
+  const { locale } = await params || "en";
 
   const result        = await fetchWhaleAlerts(1, locale);
   const initialWhales = result?.data || result || [];

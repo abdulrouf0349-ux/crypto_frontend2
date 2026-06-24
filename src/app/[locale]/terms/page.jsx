@@ -55,7 +55,7 @@ const LOCALIZED_TERMS = {
 };
 
 export async function generateMetadata({ params }) {
-  const locale = params?.locale || "en";
+  const locale =await params || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
 
   const canonical =
@@ -90,8 +90,8 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function TermsPage({ params }) {
-  const locale = params?.locale || "en";
+export default async function TermsPage({ params }) {
+  const locale =await params || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const t = LOCALIZED_TERMS[currentLocale] || LOCALIZED_TERMS["en"];

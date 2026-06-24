@@ -65,11 +65,14 @@ const OG_LOCALE: Record<string, string> = {
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale } = await params || "en";
   const meta = ICO_META[locale] ?? ICO_META["en"];
   const { title, description } = meta;
   const ogLocale = OG_LOCALE[locale] ?? "en_US";
-  const canonicalUrl = `${SITE_URL}/${locale}/ico`;
+  // ✅ FIX
+const canonicalUrl = locale === "en"
+  ? `${SITE_URL}/ico`
+  : `${SITE_URL}/${locale}/ico`;
   const ogImage = `${SITE_URL}/og/ico-launchpad.jpg`;
 
   return {
@@ -93,7 +96,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        en: `${SITE_URL}/en/ico`,
+        en: `${SITE_URL}/ico`,
         ur: `${SITE_URL}/ur/ico`,
         es: `${SITE_URL}/es/ico`,
         ru: `${SITE_URL}/ru/ico`,
@@ -101,7 +104,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         de: `${SITE_URL}/de/ico`,
         ar: `${SITE_URL}/ar/ico`,
         zh: `${SITE_URL}/zh/ico`,
-        "x-default": `${SITE_URL}/en/ico`,
+        "x-default": `${SITE_URL}/ico`  // ✅ matches
+
       },
     },
     robots: {
@@ -150,7 +154,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function IcoLaunchpadPage({ params }: PageProps) {
-  const { locale } = await params;
+  const { locale } = await params || "en";
   const ogImage = `${SITE_URL}/og/ico-launchpad.png`;
 
   const result = await fetchAllIcoProjects(locale, "Active", 1);

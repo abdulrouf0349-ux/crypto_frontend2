@@ -9,6 +9,9 @@
 //  6. SSR: initialData fetched server-side, passed as prop
 //  7. H1 moved to visible hero (in data.jsx)
 //  8. datePublished added for Google Discover
+//  9. NEW: locale passed down to CoinAnalysisPage so prediction/indicator
+//     text (RSI/MACD/EMA/Bollinger explainers, disclaimer, direction labels)
+//     renders in the page's locale instead of being hardcoded
 // ============================================================
 
 import Script from "next/script";
@@ -88,7 +91,7 @@ export async function generateMetadata({ params, searchParams }) {
       : `${SITE_URL}/${locale}${PAGE_PATH}`;
 
   // FIX: Dynamic, coin-specific title + description (audit issue #4)
-  const title = `${coinName} Price Prediction ${YEAR}, RSI, MACD & AI Analysis | ${SITE_NAME}`;
+  const title = `${coinName} Price Prediction ${YEAR}, RSI, MACD & AI Analysis`;
   const description = `Get AI-powered ${coinName} price prediction for ${YEAR}. Real-time RSI, MACD, Bollinger Bands, support & resistance levels, buy/sell signals and technical analysis updated live.`;
 
   return {
@@ -391,7 +394,9 @@ export default async function Page({ params, searchParams }) {
 
       {/* ── Original component — UI completely UNCHANGED ─────── */}
       {/* FIX: initialData passed for SSR hydration (audit issue) */}
-      <CoinAnalysisPage initialData={initialData} />
+      {/* FIX: locale passed so RSI/MACD/EMA/Bollinger explainer text and the
+          disclaimer render in the page's language instead of being hardcoded */}
+      <CoinAnalysisPage initialData={initialData} locale={locale} />
     </>
   );
 }
