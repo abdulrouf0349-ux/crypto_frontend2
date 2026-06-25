@@ -70,7 +70,7 @@ const OG_LOCALE_MAP = {
 };
 
 function buildPageUrl(locale) {
-  return locale === "en" ? SITE_URL : `${SITE_URL}/${locale}`;
+  return locale === "en" ? `${SITE_URL}/` : `${SITE_URL}/${locale}/`;
 }
 
 function buildAlternates() {
@@ -105,7 +105,7 @@ function shapeNewsItem(item) {
       item.thumbnailUrl ||
       item.imageUrl ||
       item.image ||
-      "https://cryptonewstrend.com/icons/icon-48.png",
+      "https://cryptonewstrend.com/icons/favicon-32x32.png",
     date: item.date || item.created_at || new Date().toISOString(),
     category: String(item.category || item.tag || "ALL").trim().toUpperCase(),
     readTime: item.readTime || "3",

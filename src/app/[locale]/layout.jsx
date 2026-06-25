@@ -73,7 +73,7 @@ const LOCALE_META = {
 };
 
 function buildUrl(locale, path = "") {
-  const base = locale === "en" ? SITE_URL : `${SITE_URL}/${locale}`;
+  const base = locale === "en" ? `${SITE_URL}/` : `${SITE_URL}/${locale}/`;
   return path ? `${base}/${path.replace(/^\/+/, "")}` : base;
 }
 

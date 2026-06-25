@@ -37,8 +37,8 @@ export function Footer() {
           <div>
             <h4 className="font-bold mb-4 font-display text-white">{t("footer.news")}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link href="/latest-news" className="hover:text-purple-400 transition-colors">{t("footer.latestNews")}</Link></li>
-              <li><Link href="/market-update" className="hover:text-purple-400 transition-colors">{t("footer.marketUpdate")}</Link></li>
+              <li><Link href="/" className="hover:text-purple-400 transition-colors">{t("footer.latestNews")}</Link></li>
+              <li><Link href="/events" className="hover:text-purple-400 transition-colors">{t("footer.events")}</Link></li>
               <li><Link href="/crypto-whales" className="hover:text-purple-400 transition-colors">{t("footer.whaleTracking")}</Link></li>
               <li><Link href="/coin-analysis" className="hover:text-purple-400 transition-colors">{t("footer.coinAnalysis")}</Link></li>
               <li><Link href="/ico" className="hover:text-purple-400 transition-colors">{t("footer.icoNews")}</Link></li>
