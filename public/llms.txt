@@ -1,57 +1,144 @@
 # CryptoNewsTrend
 
-> CryptoNewsTrend is a real-time cryptocurrency news, whale tracking, coin analysis, and ICO launchpad platform. We cover Bitcoin, Ethereum, and all major altcoins with live on-chain data, price analysis, and breaking crypto news in 8 languages.
+CryptoNewsTrend is a multilingual cryptocurrency intelligence platform providing real-time crypto news, whale transaction tracking, coin analysis, ICO monitoring, market insights, and blockchain event coverage.
 
-## About
+Website: https://cryptonewstrend.com
 
-CryptoNewsTrend provides:
-- Real-time crypto news in English, Urdu, Arabic, Spanish, French, German, Russian, and Chinese
-- Live crypto whale transaction alerts (large on-chain transfers updated every 60 seconds)
-- Coin analysis and price prediction articles
-- ICO launchpad with active, upcoming, and ended token sales
-- Crypto events calendar
-- Cryptocurrency glossary
+## Platform Overview
 
-## Key Pages
+CryptoNewsTrend covers:
 
-- [Home](https://cryptonewstrend.com/): Latest crypto news and market updates
-- [Crypto Whale Tracker](https://cryptonewstrend.com/crypto-whales): Live large transaction alerts for BTC, ETH, and altcoins
-- [Coin Analysis](https://cryptonewstrend.com/coin-analysis): In-depth price analysis and predictions
-- [ICO Launchpad](https://cryptonewstrend.com/ico): Active and upcoming crypto token sales
-- [Events](https://cryptonewstrend.com/events): Crypto conferences, launches, and deadlines
-- [Glossary](https://cryptonewstrend.com/glossary): Cryptocurrency terms and definitions
+- Breaking cryptocurrency news
+- Bitcoin (BTC) analysis
+- Ethereum (ETH) analysis
+- Altcoin market updates
+- Crypto whale transaction tracking
+- ICO and token launch monitoring
+- Blockchain and Web3 events
+- Educational crypto glossary content
+- Market research and insights
 
-## News
+## Main Sections
 
-Latest crypto news articles are available at:
-- [https://cryptonewstrend.com/news/](https://cryptonewstrend.com/news/) — English
-- [https://cryptonewstrend.com/ur/news/](https://cryptonewstrend.com/ur/news/) — Urdu
-- [https://cryptonewstrend.com/ar/news/](https://cryptonewstrend.com/ar/news/) — Arabic
-- [https://cryptonewstrend.com/es/news/](https://cryptonewstrend.com/es/news/) — Spanish
-- [https://cryptonewstrend.com/fr/news/](https://cryptonewstrend.com/fr/news/) — French
-- [https://cryptonewstrend.com/de/news/](https://cryptonewstrend.com/de/news/) — German
-- [https://cryptonewstrend.com/ru/news/](https://cryptonewstrend.com/ru/news/) — Russian
-- [https://cryptonewstrend.com/zh/news/](https://cryptonewstrend.com/zh/news/) — Chinese
+Home:
+https://cryptonewstrend.com
+
+News:
+https://cryptonewstrend.com/news
+
+Crypto Whale Tracker:
+https://cryptonewstrend.com/crypto-whales
+
+Coin Analysis:
+https://cryptonewstrend.com/coin-analysis
+
+ICO Launchpad:
+https://cryptonewstrend.com/ico
+
+Crypto Events:
+https://cryptonewstrend.com/events
+
+Crypto Glossary:
+https://cryptonewstrend.com/glossary
+
+About:
+https://cryptonewstrend.com/about-us
+
+Editorial Policy:
+https://cryptonewstrend.com/editorial-policy
+
+Contact:
+https://cryptonewstrend.com/contact
+
+## Supported Languages
+
+English:
+https://cryptonewstrend.com/news
+
+Urdu:
+https://cryptonewstrend.com/ur/news
+
+Arabic:
+https://cryptonewstrend.com/ar/news
+
+Spanish:
+https://cryptonewstrend.com/es/news
+
+French:
+https://cryptonewstrend.com/fr/news
+
+German:
+https://cryptonewstrend.com/de/news
+
+Russian:
+https://cryptonewstrend.com/ru/news
+
+Chinese:
+https://cryptonewstrend.com/zh/news
 
 ## Sitemaps
 
-- [Sitemap Index](https://cryptonewstrend.com/sitemap.xml)
-- [Static Pages Sitemap](https://cryptonewstrend.com/sitemaps/static.xml)
-- [News Sitemap](https://cryptonewstrend.com/sitemaps/news.xml)
-- [Whale Alerts Sitemap](https://cryptonewstrend.com/sitemaps/whales.xml)
-- [Coin Analysis Sitemap](https://cryptonewstrend.com/sitemaps/coin-analysis.xml)
-- [ICO Sitemap](https://cryptonewstrend.com/sitemaps/ico.xml)
+Sitemap Index:
+https://cryptonewstrend.com/sitemap.xml
 
-## Content Policy
+Static Pages:
+https://cryptonewstrend.com/sitemaps/static.xml
 
-- All news content is original and written by the CryptoNewsTrend editorial team
-- Whale alert data is sourced from on-chain blockchain data in real time
-- Content is freely accessible (no paywall)
-- AI crawlers may index content for search and citation (ai-input: yes)
-- AI training use is not permitted (ai-train: no)
+News:
+https://cryptonewstrend.com/sitemaps/news.xml
 
-## Contact
+Crypto Whales:
+https://cryptonewstrend.com/sitemaps/whales.xml
 
-- Website: https://cryptonewstrend.com
-- About: https://cryptonewstrend.com/about-us
-- Editorial Policy: https://cryptonewstrend.com/editorial-policy
+Coin Analysis:
+https://cryptonewstrend.com/sitemaps/coin-analysis.xml
+
+ICO:
+https://cryptonewstrend.com/sitemaps/ico.xml
+
+## Content Standards
+
+- Original cryptocurrency reporting
+- Independent market analysis
+- Real-time blockchain whale tracking
+- Editorial review process
+- Publicly accessible content
+- No paywall restrictions
+
+## AI Usage Policy
+
+AI Indexing: Allowed
+
+AI Search Inclusion: Allowed
+
+AI Citation: Allowed with attribution
+
+AI Training: Prohibited without written permission
+
+ai-input: yes
+ai-search: yes
+ai-citation: yes
+ai-train: no
+
+## Organization
+
+Organization: CryptoNewsTrend
+
+Website:
+https://cryptonewstrend.com
+
+Editorial Policy:
+https://cryptonewstrend.com/editorial-policy
+
+Contact:
+https://cryptonewstrend.com/contact
+
+## Preferred Citation
+
+Source: CryptoNewsTrend
+
+URL:
+https://cryptonewstrend.com
+
+Attribution:
+"Source: CryptoNewsTrend"

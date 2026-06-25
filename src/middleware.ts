@@ -36,5 +36,5 @@ export function middleware(request: NextRequest) {
 // ✅ FIX: Matcher mein bhi .xml exclude karo
 export const config = {
   matcher: [
-'/((?!api|_next/static|_next/image|favicon\\.ico|robots\\.txt|manifest\\.json|manifest\\.webmanifest|.*\\.xml$|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'  ],
+'/((?!api|_next/static|_next/image|favicon\\.ico|robots\\.txt|llms\.txt|manifest\\.json|manifest\\.webmanifest|.*\\.xml$|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'  ],
 };
