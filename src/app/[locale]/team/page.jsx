@@ -155,6 +155,10 @@ export default async function TeamPage({ params }) {
   const isRtl  = ["ur", "ar"].includes(locale);
   const prefix = locale === "en" ? "" : `/${locale}`;
   const meta   = META[locale] || META.en;
+ const canonical =
+    locale === "en"
+      ? `${SITE_URL}/team`
+      : `${SITE_URL}/${locale}/team`;
 
  const structuredData = {
   "@context": "https://schema.org",
@@ -203,7 +207,7 @@ export default async function TeamPage({ params }) {
       <Script
         id="team-jsonld"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
       <main
