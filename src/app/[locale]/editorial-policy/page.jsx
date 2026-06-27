@@ -319,7 +319,13 @@ export default async function EditorialPolicyPage({ params }) {
   const isRtl = ["ur", "ar"].includes(locale);
   
   const t = POLICY_DICT[locale] || POLICY_DICT.en;
+  const currentMeta = META[locale] || META.en;   // ✅ yeh add karo
 
+  // ✅ yeh add karo
+  const canonical =
+    locale === "en"
+      ? `${SITE_URL}/editorial-policy`
+      : `${SITE_URL}/${locale}/editorial-policy`;
   return (
     <>
       <Script
