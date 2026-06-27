@@ -344,8 +344,7 @@ const LANGS = [
   { code: "ZH", name: "中文"     },
 ];
 export default async function AboutPage({ params }) {
-  const resolvedParams = await params;
-  const locale = resolvedParams?.locale || "en";
+  const { locale: raw } = await params || {};
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const isRtl  = ["ur", "ar"].includes(locale);
   const prefix = locale === "en" ? "" : `/${locale}`;
