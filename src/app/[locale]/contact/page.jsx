@@ -4,38 +4,56 @@ import Script from "next/script";
 const SITE_URL = "https://cryptonewstrend.com";
 const VALID_LOCALES = ["en", "ur", "es", "ru", "fr", "de", "ar", "zh"];
 
+// ✅ FIX — no trailing slash, ever. Matches canonical exactly.
+// en          -> https://cryptonewstrend.com/contact
+// ur          -> https://cryptonewstrend.com/ur/contact
+function buildUrl(locale, path = "") {
+  const base = locale === "en" ? SITE_URL : `${SITE_URL}/${locale}`;
+  const cleanPath = path.replace(/^\/+|\/+$/g, "");
+  return cleanPath ? `${base}/${cleanPath}` : base;
+}
+
+function buildAlternates(path = "") {
+  const langs = {};
+  VALID_LOCALES.forEach((l) => {
+    langs[l] = buildUrl(l, path);
+  });
+  langs["x-default"] = buildUrl("en", path);
+  return langs;
+}
+
 // ── Per-locale SEO Metadata ─────────────────────────────
 const META = {
   en: {
-    title: "Contact Us - CryptoNewsTrend | News Tips & Support",
-    desc:  "Contact the CryptoNewsTrend editorial team for news tips, corrections, partnerships, Telegram support, and media inquiries.",
+    title: "Contact Us | News Tips & Support",
+    desc:  "Contact CryptoNewsTrend for cryptocurrency news tips, press releases, partnership opportunities, advertising inquiries, corrections, media requests, and customer support.",
   },
   ur: {
-    title: "ہم سے رابطہ کریں - CryptoNewsTrend",
+    title: "ہم سے رابطہ کریں ",
     desc:  "خبروں کے ٹپس، شراکت داری، ٹیلی گرام سپورٹ، اور میڈیا انکوائری کے لیے CryptoNewsTrend کی ادارتی ٹیم سے رابطہ کریں۔",
   },
   ar: {
-    title: "اتصل بنا - CryptoNewsTrend | الدعم والاستفسارات",
+    title: "اتصل بنا - | الدعم والاستفسارات",
     desc:  "اتصل بفريق تحرير CryptoNewsTrend للحصول على نصائح الأخبار، الشراكات، دعم تيليجرام، والاستفسارات الإعلامية.",
   },
   es: {
-    title: "Contáctenos - CryptoNewsTrend | Soporte y Noticias",
+    title: "Contáctenos  | Soporte y Noticias",
     desc:  "Póngase en contacto con el equipo editorial de CryptoNewsTrend para sugerencias de noticias, asociaciones, soporte de Telegram.",
   },
   fr: {
-    title: "Contactez-nous - CryptoNewsTrend | Support et Publicité",
+    title: "Contactez-nous  | Support et Publicité",
     desc:  "Contactez l'équipe éditoriale de CryptoNewsTrend pour des conseils d'actualité, des partenariats ou le support Telegram.",
   },
   de: {
-    title: "Kontaktieren Sie uns - CryptoNewsTrend",
+    title: "Kontaktieren Sie uns - ",
     desc:  "Kontaktieren Sie die CryptoNewsTrend-Redaktion für Nachrichtentipps, Partnerschaften, Telegram-Support und Medienanfragen.",
   },
   ru: {
-    title: "Контакты - CryptoNewsTrend | Поддержка и Реклама",
+    title: "Контакты  | Поддержка и Реклама",
     desc:  "Свяжитесь с редакцией CryptoNewsTrend для передачи новостей, партнерства, поддержки в Telegram и запросов СМИ.",
   },
   zh: {
-    title: "联系我们 - CryptoNewsTrend | 新闻线索与支持",
+    title: "联系我们  | 新闻线索与支持",
     desc:  "联系 CryptoNewsTrend 编辑团队以获取新闻线索、商业合作、Telegram 支持或媒体咨询。",
   }
 };
@@ -149,28 +167,27 @@ const CONTACT_DICT = {
 };
 
 export async function generateMetadata({ params }) {
-  const { locale: raw } = await params || "en";
+  const { locale: raw } = (await params) || {};
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const currentMeta = META[locale] || META.en;
 
-  const canonical =
-    locale === "en"
-      ? `${SITE_URL}/contact`
-      : `${SITE_URL}/${locale}/contact`;
-
-  const languages = {};
-  VALID_LOCALES.forEach((l) => {
-    languages[l] =
-      l === "en"
-        ? `${SITE_URL}/contact`
-        : `${SITE_URL}/${l}/contact`;
-  });
-
-  languages["x-default"] = `${SITE_URL}/contact`;
+  // ✅ FIXED — uses the shared helper instead of local duplicated logic.
+  // This guarantees canonical and hreflang["en"]/["x-default"] are always
+  // byte-for-byte identical, on this page AND every other page.
+  const canonical = buildUrl(locale, "contact");
+  const languages = buildAlternates("contact");
 
   return {
     title: currentMeta.title,
     description: currentMeta.desc,
+    keywords: [
+  "contact cryptonewstrend",
+  "crypto news tips",
+  "crypto advertising",
+  "crypto partnerships",
+  "crypto media inquiries",
+  "crypto support"
+],
     robots: {
       index: true,
       follow: true,
@@ -187,7 +204,7 @@ export async function generateMetadata({ params }) {
       siteName: "CryptoNewsTrend",
       images: [
         {
-          url: `${SITE_URL}/og-image.jpg`,
+          url: `${SITE_URL}/og-image.png`,
           width: 1200,
           height: 630,
         },
@@ -203,46 +220,92 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ContactPage({ params }) {
-  const { locale: raw } = await params || "en";
+  const { locale: raw } = (await params) || {};
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const isRtl = ["ur", "ar"].includes(locale);
-  
+
   const t = CONTACT_DICT[locale] || CONTACT_DICT.en;
 
+  // ✅ FIXED — same helper used for the JSON-LD url, so it matches
+  // the canonical/hreflang tags above too.
+  const pageUrl = buildUrl(locale, "contact");
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ContactPage",
+      "name": t.heading,
+      "url": pageUrl
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How can I submit a crypto news tip?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can contact CryptoNewsTrend through our contact page."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I request a correction?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use the contact form and provide the article URL."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": SITE_URL
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Contact",
+          "item": pageUrl
+        }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "name": "CryptoNewsTrend",
+      "url": SITE_URL,
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": pageUrl,
+        "availableLanguage": [
+          "English",
+          "Urdu",
+          "Spanish",
+          "French",
+          "German",
+          "Arabic",
+          "Russian",
+          "Chinese"
+        ]
+      }
+    }
+  ]
+};
   return (
     <>
       <Script
-        type="application/ld+json"
-        id="contact-page-jsonld"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ContactPage",
-            name: t.heading,
-            url:
-              locale === "en"
-                ? `${SITE_URL}/contact`
-                : `${SITE_URL}/${locale}/contact`,
-            mainEntity: {
-              "@type": "Organization",
-              name: "CryptoNewsTrend",
-              url: SITE_URL,
-              contactPoint: [
-                {
-                  "@type": "ContactPoint",
-                  contactType: "editorial",
-                  email: "editor@cryptonewstrend.com"
-                },
-                {
-                  "@type": "ContactPoint",
-                  contactType: "advertising",
-                  email: "ads@cryptonewstrend.com"
-                }
-              ]
-            }
-          })
-        }}
-      />
+  id="contact-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(schema),
+  }}
+/>
 
       <main className="min-h-screen bg-transparent text-gray-900 dark:text-gray-100 transition-colors duration-200 py-20" dir={isRtl ? "rtl" : "ltr"}>
         <div className="container mx-auto px-4 max-w-3xl">

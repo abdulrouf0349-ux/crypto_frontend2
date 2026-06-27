@@ -26,7 +26,7 @@ const OG_LOCALE_MAP: Record<string, string> = {
   de: "de_DE",
   fr: "fr_FR",
   ru: "ru_RU",
-  zh: "zh_CN",
+  zh: "zh-Hans",
   es: "es_ES",
 };
 
@@ -192,7 +192,7 @@ function buildEventsSchema(
         name: event?.organizer || SITE_NAME,
         url: event?.organizer_url || BASE_URL,
       },
-      image: event?.image || event?.banner || `${BASE_URL}/og-events-2026.jpg`,
+      image: event?.image || event?.banner || `${BASE_URL}/og-events.png`,
       eventStatus: "https://schema.org/EventScheduled",
       eventAttendanceMode:
         event?.is_virtual || event?.type === "online"
@@ -240,38 +240,29 @@ function buildEventsSchema(
 },
 
       // ── CollectionPage ─────────────────────────────────────────────────
-     {
+ {
   "@type": "CollectionPage",
   "@id": `${canonicalUrl}#webpage`,
-  mainEntity: {
-  "@id": `${canonicalUrl}#eventlist`
-},
- speakable: {
-  "@type": "SpeakableSpecification",
-  cssSelector: [".h1"]
-},
-about: {
-  "@type": "Thing",
-  "name": "Cryptocurrency Events"
-},
-datePublished:
-events?.[0]?.created_at || now,
-
-dateModified:
-events?.[0]?.updated_at || now,
   url: canonicalUrl,
   name: META_TITLES[locale] || META_TITLES.en,
   description: META_DESCRIPTIONS[locale] || META_DESCRIPTIONS.en,
   inLanguage: locale,
   isPartOf: { "@id": `${BASE_URL}#website` },
   publisher: { "@id": `${BASE_URL}#organization` },
-  // events.[0].updated_at ||
-  // events?.[0]?.created_at ||
-  now,
-  breadcrumb: { "@id": `${canonicalUrl}#breadcrumb` },
 
-},
+  datePublished:
+    events?.[0]?.created_at || now,
 
+  dateModified:
+    events?.[0]?.updated_at ||
+    events?.[0]?.created_at ||
+    now,
+
+  breadcrumb: {
+    "@id": `${canonicalUrl}#breadcrumb`
+  }
+}
+,
       // ── BreadcrumbList ─────────────────────────────────────────────────
       {
         "@type": "BreadcrumbList",

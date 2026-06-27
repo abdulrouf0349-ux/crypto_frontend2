@@ -75,7 +75,7 @@ function buildCoinMeta(
     coin?.icon_url ||
     coin?.image ||
     coin?.logo ||
-    `${BASE_URL}/crypto-glossary.png`;
+    `${BASE_URL}/og-glossary.png`;
   const canonicalUrl = buildCanonical(locale, slug);
   const updatedAt = coin?.updated_at || new Date().toISOString();
   const publishedAt = coin?.created_at || coin?.published_at || updatedAt;
@@ -194,7 +194,7 @@ export async function generateMetadata({
           width: 1200,
           height: 630,
           alt: `${name} (${symbol}) cryptocurrency logo and overview`,
-          type: "image/jpeg",
+          type: "image/png",
         },
       ],
     },

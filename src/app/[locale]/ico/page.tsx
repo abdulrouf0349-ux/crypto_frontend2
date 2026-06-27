@@ -61,11 +61,12 @@ const OG_LOCALE: Record<string, string> = {
   fr: "fr_FR",
   de: "de_DE",
   ar: "ar_AR",
-  zh: "zh_CN",
+   zh: "zh-Hans",
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale } = await params || "en";
+  const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
   const meta = ICO_META[locale] ?? ICO_META["en"];
   const { title, description } = meta;
   const ogLocale = OG_LOCALE[locale] ?? "en_US";
@@ -73,7 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 const canonicalUrl = locale === "en"
   ? `${SITE_URL}/ico`
   : `${SITE_URL}/${locale}/ico`;
-  const ogImage = `${SITE_URL}/og/ico-launchpad.jpg`;
+  const ogImage = `${SITE_URL}/og-ico.png`;
 
   return {
     title: {
@@ -104,6 +105,7 @@ const canonicalUrl = locale === "en"
         de: `${SITE_URL}/de/ico`,
         ar: `${SITE_URL}/ar/ico`,
         zh: `${SITE_URL}/zh/ico`,
+        "zh-Hans": `${SITE_URL}/zh/ico`,
         "x-default": `${SITE_URL}/ico`  // ✅ matches
 
       },
@@ -142,7 +144,7 @@ const canonicalUrl = locale === "en"
       card: "summary_large_image",
       title,
       description,
-      images: [`${SITE_URL}/ico-launchpad.png`],
+      images: [`${SITE_URL}/og-ico.png`],
       creator: "@cryptonews90841",
       site: "@cryptonews90841",
     },
@@ -154,9 +156,13 @@ const canonicalUrl = locale === "en"
 }
 
 export default async function IcoLaunchpadPage({ params }: PageProps) {
-  const { locale } = await params || "en";
-  const ogImage = `${SITE_URL}/og/ico-launchpad.png`;
-
+  const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
+  const ogImage = `${SITE_URL}/og-ico.png`;
+const buildIcoUrl = (locale: string) =>
+  locale === "en"
+    ? `${SITE_URL}/ico`
+    : `${SITE_URL}/${locale}/ico`;
   const result = await fetchAllIcoProjects(locale, "Active", 1);
   const initialData = result?.success ? result.data : [];
   const totalPages = result?.success ? result.total_pages : 1;
@@ -180,7 +186,7 @@ export default async function IcoLaunchpadPage({ params }: PageProps) {
       {
         "@type": "WebPage",
         "@id": `${SITE_URL}/${locale}/ico#webpage`,
-        url: `${SITE_URL}/${locale}/ico`,
+        url: buildIcoUrl(locale),
         // Fix Issue #4 — only set dateModified if the API provides it
         ...(dateModified ? { dateModified } : {}),
         headline:
@@ -206,7 +212,7 @@ export default async function IcoLaunchpadPage({ params }: PageProps) {
         ],
         potentialAction: {
           "@type": "ReadAction",
-          target: [`${SITE_URL}/${locale}/ico`],
+          target: [buildIcoUrl(locale)],
         },
         name: "ICO Launchpad – Top Crypto Projects & Token Sales 2026",
         keywords:
@@ -239,7 +245,7 @@ export default async function IcoLaunchpadPage({ params }: PageProps) {
             "@type": "ListItem",
             position: 2,
             name: "ICO Launchpad",
-            item: `${SITE_URL}/${locale}/ico`,
+            item: buildIcoUrl(locale),
           },
         ],
       },
@@ -250,7 +256,7 @@ export default async function IcoLaunchpadPage({ params }: PageProps) {
         name: "Active ICO Projects 2026",
         description:
           "Currently active Initial Coin Offering (ICO) projects available for whitelist registration.",
-        url: `${SITE_URL}/${locale}/ico`,
+        url: buildIcoUrl(locale),
         numberOfItems: Math.min(initialData.length, 10),
         itemListElement: initialData.slice(0, 10).map((ico: any, index: number) => ({
           "@type": "ListItem",

@@ -72,9 +72,11 @@ const LOCALE_META = {
   },
 };
 
+// ✅ FIXED — no trailing slash, ever. Consistent string everywhere.
 function buildUrl(locale, path = "") {
-  const base = locale === "en" ? `${SITE_URL}/` : `${SITE_URL}/${locale}/`;
-  return path ? `${base}/${path.replace(/^\/+/, "")}` : base;
+  const base = locale === "en" ? SITE_URL : `${SITE_URL}/${locale}`;
+  if (!path) return base;
+  return `${base}/${path.replace(/^\/+/, "")}`;
 }
 
 function buildAlternates(path = "") {

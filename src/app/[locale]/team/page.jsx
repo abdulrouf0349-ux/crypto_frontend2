@@ -10,35 +10,35 @@ const VALID_LOCALES = ["en", "ur", "es", "ru", "fr", "de", "ar", "zh"];
 // ── Per-locale SEO ──────────────────────────────────────
 const META = {
   en: {
-    title: "Our Team - CryptoNewsTrend | Meet the People Behind the Platform",
+    title: "Our Team | Meet the People Behind the Platform",
     desc:  "Meet the developers, editors, and analysts behind CryptoNewsTrend — the team delivering real-time Bitcoin news, whale tracking, and blockchain coverage in 8 languages.",
   },
   ur: {
-    title: "ہماری ٹیم - CryptoNewsTrend | پلیٹ فارم کے پیچھے لوگ",
+    title: "ہماری ٹیم  | پلیٹ فارم کے پیچھے لوگ",
     desc:  "CryptoNewsTrend کے ڈیولپرز، ایڈیٹرز اور تجزیہ کاروں سے ملیں جو دنیا بھر کے قارئین کے لیے کرپٹو خبریں اور بلاکچین کوریج فراہم کرتے ہیں۔",
   },
   ar: {
-    title: "فريقنا - CryptoNewsTrend | تعرف على فريق العمل",
+    title: "فريقنا | تعرف على فريق العمل",
     desc:  "تعرف على المطورين والمحررين والمحللين في CryptoNewsTrend الذين يقدمون أخبار البيتكوين وتتبع الحيتان وتغطية البلوكتشين بـ 8 لغات.",
   },
   es: {
-    title: "Nuestro Equipo - CryptoNewsTrend | Conoce a las Personas Detrás",
+    title: "Nuestro Equipo | Conoce a las Personas Detrás",
     desc:  "Conoce a los desarrolladores, editores y analistas de CryptoNewsTrend que ofrecen noticias de Bitcoin, seguimiento de ballenas y cobertura blockchain.",
   },
   fr: {
-    title: "Notre Équipe - CryptoNewsTrend | Découvrez l'Équipe",
+    title: "Notre Équipe | Découvrez l'Équipe",
     desc:  "Découvrez les développeurs, éditeurs et analystes de CryptoNewsTrend qui fournissent des actualités Bitcoin, le suivi des baleines et la couverture blockchain.",
   },
   de: {
-    title: "Unser Team - CryptoNewsTrend | Die Menschen Hinter der Plattform",
+    title: "Unser Team | Die Menschen Hinter der Plattform",
     desc:  "Lernen Sie die Entwickler, Redakteure und Analysten von CryptoNewsTrend kennen, die Bitcoin-Nachrichten, Whale-Tracking und Blockchain-Berichte liefern.",
   },
   ru: {
-    title: "Наша Команда - CryptoNewsTrend | Люди за Платформой",
+    title: "Наша Команда | Люди за Платформой",
     desc:  "Познакомьтесь с разработчиками, редакторами и аналитиками CryptoNewsTrend, которые предоставляют новости Bitcoin, отслеживание китов и обзор блокчейна.",
   },
   zh: {
-    title: "我们的团队 - CryptoNewsTrend | 认识平台背后的人",
+    title: "我们的团队 | 认识平台背后的人",
     desc:  "认识 CryptoNewsTrend 的开发者、编辑和分析师团队，他们为全球用户提供实时比特币新闻、巨鲸追踪和区块链报道。",
   },
 };
@@ -156,30 +156,47 @@ export default async function TeamPage({ params }) {
   const prefix = locale === "en" ? "" : `/${locale}`;
   const meta   = META[locale] || META.en;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    name: meta.title,
-    url: locale === "en" ? `${SITE_URL}/team` : `${SITE_URL}/${locale}/team`,
-    description: meta.desc,
-    mainEntity: {
-      "@type": "Organization",
-      name: "CryptoNewsTrend",
-      url: SITE_URL,
-      logo: `${SITE_URL}/logo.png`,
-      foundingDate: "2024",
-      founder: {
-        "@type": "Person",
-        name: "Roy",
-        jobTitle: "Founder & Software Owner",
-      },
-      employee: TEAM.slice(1).map((m) => ({
-        "@type": "Person",
-        name: m.name,
-        jobTitle: m.role,
-      })),
+ const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "AboutPage",
+      "@id": `${canonical}#aboutpage`,
+      "url": canonical,
+      "name": meta.title,
+      "description": meta.desc,
+      "inLanguage": locale,
+      "mainEntity": {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        "name": "CryptoNewsTrend",
+        "url": SITE_URL,
+        "logo": `${SITE_URL}/logo.png`
+      }
     },
-  };
+
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${canonical}#breadcrumb`,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": locale === "en"
+            ? SITE_URL
+            : `${SITE_URL}/${locale}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Team",
+          "item": canonical
+        }
+      ]
+    }
+  ]
+};
 
   return (
     <>

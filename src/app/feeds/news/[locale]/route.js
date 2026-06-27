@@ -40,13 +40,15 @@ async function fetchLatestNews(locale) {
     locale === "en"
       ? `${BASE_API}/api/getdata/?page=1`
       : `${BASE_API}/api/getdata/${apiLocale}/?page=1`;
+        console.log("[RSS DEBUG] locale:", locale, "apiLocale:", apiLocale, "url:", url); // ✅ debug line
+
 
   try {
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ news: "all" }),
-      next: { revalidate: REVALIDATE_NEWS_FEED, tags: [`news-${locale}`] },
+      next: { revalidate: 420, tags: [`news-${locale}`] },
     });
     if (!res.ok) return [];
     const data = await res.json();
@@ -58,7 +60,11 @@ async function fetchLatestNews(locale) {
 }
 
 export async function GET(request, { params }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+
+  // ✅ FIX — strip ".xml" from the route param, since Next.js treats
+  // "en.xml" as a literal [locale] value, not as a file extension.
+  const locale = rawLocale.replace(/\.xml$/, "");
 
   if (!VALID_LOCALES.includes(locale)) return notFound();
 
@@ -88,5 +94,6 @@ export async function GET(request, { params }) {
 
   return rssResponse(xml);
 }
+
 
 export const revalidate = 300;

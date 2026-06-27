@@ -55,7 +55,8 @@ const LOCALIZED_TERMS = {
 };
 
 export async function generateMetadata({ params }) {
-  const locale =await params || "en";
+  const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
 
   const canonical =
@@ -91,33 +92,62 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function TermsPage({ params }) {
-  const locale =await params || "en";
+  const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const t = LOCALIZED_TERMS[currentLocale] || LOCALIZED_TERMS["en"];
 
   const pageUrl = currentLocale === "en" ? `${SITE_URL}/terms` : `${SITE_URL}/${currentLocale}/terms`;
-
+const structuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: t.title,
+      description: `Terms and Conditions for ${SITE_NAME} platform usage, intellectual property parameters, and legal disclaimers.`,
+      inLanguage: currentLocale,
+      isPartOf: {
+        "@id": `${SITE_URL}/#website`,
+      },
+      publisher: {
+        "@id": `${SITE_URL}/#organization`,
+      },
+      breadcrumb: {
+        "@id": `${pageUrl}#breadcrumb`,
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: currentLocale === "en"
+            ? SITE_URL
+            : `${SITE_URL}/${currentLocale}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Terms & Conditions",
+          item: pageUrl,
+        },
+      ],
+    },
+  ],
+});
   return (
     <>
-      <Script
-        id="terms-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: t.title,
-            url: pageUrl,
-            description: `Terms and Conditions for ${SITE_NAME} platform usage, intellectual property parameters, and legal disclaimers.`,
-            publisher: {
-              "@type": "Organization",
-              name: SITE_NAME,
-              url: SITE_URL
-            }
-          })
-        }}
-      />
+     <Script
+  id="terms-jsonld"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: structuredData }}
+/>
       
       <main 
         className="min-h-screen bg-transparent text-gray-950 dark:text-gray-100 transition-colors duration-200 py-20"

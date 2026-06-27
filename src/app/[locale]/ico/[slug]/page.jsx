@@ -56,7 +56,7 @@ export async function generateMetadata({ params }) {
   const shortDesc = rawDesc.length > 120 ? rawDesc.slice(0, 117) + "..." : rawDesc;
   const metaDescription = `${shortDesc} Join the ${ico.name} whitelist on CryptoNewsTrend today.`;
 
-  const ogImageUrl = ico.main_img || `${SITE_URL}/ico-default.png`;
+  const ogImageUrl = ico.main_img || `${SITE_URL}/og-ico.png`;
 
   const alternateLanguages = {};
   for (const loc of VALID_LOCALES) {
@@ -118,7 +118,8 @@ export async function generateMetadata({ params }) {
         },
       ],
       locale:          OG_LOCALE_MAP[locale],
-      alternateLocale: ["en_US","ur_PK","es_ES","ru_RU","fr_FR","de_DE","ar_SA","zh_CN"],
+alternateLocale: Object.values(OG_LOCALE_MAP)
+  .filter(l => l !== OG_LOCALE_MAP[locale]),
     },
 
     other: {
@@ -151,7 +152,7 @@ export default async function IcoSlugPage({ params }) {
 
   const ico       = res.data;
   const canonical = buildCanonical(locale, ico.slug);
-  const ogImageUrl = ico.main_img || `${SITE_URL}/og/ico-default.jpg`;
+  const ogImageUrl = ico.main_img || `${SITE_URL}/og-ico.png`;
 
   // ── JSON-LD ────────────────────────────────────────────────────────────────
   const jsonLd = {
@@ -159,26 +160,7 @@ export default async function IcoSlugPage({ params }) {
     "@graph": [
 
       // Organization
-      {
-        "@type": "Organization",
-        "@id":   `${SITE_URL}/#organization`,
-        name:    SITE_NAME,
-        url:     SITE_URL,
-        logo: {
-          "@type": "ImageObject",
-          "@id":   `${SITE_URL}/logo.png#logo`,
-          url:     `${SITE_URL}/logo.png`,
-        },
-      },
-
-      // WebSite
-      {
-        "@type":     "WebSite",
-        "@id":       `${SITE_URL}/#website`,
-        url:         SITE_URL,
-        name:        SITE_NAME,
-        publisher:   { "@id": `${SITE_URL}/#organization` },
-      },
+     
 
       // FinancialProduct
       {
@@ -374,12 +356,7 @@ export default async function IcoSlugPage({ params }) {
 
   return (
     <>
-      {/* FIX #15: preload hero image for LCP */}
-      {ico.main_img && (
-        // eslint-disable-next-line @next/next/no-head-element
-        // Next.js 14+ supports <link> in page via metadata; for App Router we use the tag directly
-        <link rel="preload" as="image" href={ico.main_img} />
-      )}
+    
 
       <Script
         id={`ico-detail-jsonld-${ico.slug}`}

@@ -31,7 +31,8 @@ interface PageProps {
 export async function generateMetadata(
   { params }: PageProps
 ): Promise<Metadata> {
-  const { locale } = await params || "en";
+  const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
 
   const titles: Record<string, string> = {
     en: "Crypto Whale Tracker — Live Whale Alerts & Large Transactions 2026",
@@ -130,8 +131,8 @@ export async function generateMetadata(
 
 // ─── Page Component ─────────────────────────────────────────
 export default async function WhaleTrackerPage({ params }: PageProps) {
-  const { locale } = await params || "en";
-
+const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
   const result        = await fetchWhaleAlerts(1, locale);
   const initialWhales = result?.data || result || [];
   const totalPages    = result?.metadata?.total_pages || 1;

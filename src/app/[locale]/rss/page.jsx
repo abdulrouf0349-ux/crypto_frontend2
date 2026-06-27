@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Script from "next/script";
+import CopyFeedButton from "@/components/CopyFeedButton";
 
 const SITE_URL = "https://cryptonewstrend.com";
 const SITE_NAME = "CryptoNewsTrend";
 const VALID_LOCALES = ["en", "ur", "es", "ru", "fr", "de", "ar", "zh"];
-const FEED_TYPES = ["news", "events"];
 
 // Extensive Multilingual Text Content Matrix for the Feeds Directory Page
 const LOCALIZED_FEEDS_TEXT = {
@@ -124,47 +124,86 @@ const LOCALIZED_FEEDS_TEXT = {
 
 // Metadata mapping generator
 export async function generateMetadata({ params }) {
-  const {locale} = params || "en";
+  const { locale = "en" } = await params;
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const t = LOCALIZED_FEEDS_TEXT[currentLocale] || LOCALIZED_FEEDS_TEXT["en"];
 
-  const canonical =
-    currentLocale === "en"
-      ? `${SITE_URL}/en/feeds`
-      : `${SITE_URL}/${currentLocale}/feeds`;
+ const canonical =
+  currentLocale === "en"
+    ? `${SITE_URL}/rss`
+    : `${SITE_URL}/${currentLocale}/rss`;
 
   return {
     title: `${t.title} - ${SITE_NAME}`,
     description: t.metaDesc,
     robots: { index: true, follow: true },
-    alternates: { canonical }
+    alternates: {
+  canonical,
+  languages: {
+    en: `${SITE_URL}/rss`,
+    ur: `${SITE_URL}/ur/rss`,
+    es: `${SITE_URL}/es/rss`,
+    ru: `${SITE_URL}/ru/rss`,
+    fr: `${SITE_URL}/fr/rss`,
+    de: `${SITE_URL}/de/rss`,
+    ar: `${SITE_URL}/ar/rss`,
+    zh: `${SITE_URL}/zh/rss`,
+    "x-default": `${SITE_URL}/rss`,
+  },
+},
+openGraph: {
+  type: "website",
+  title: `${t.title} - ${SITE_NAME}`,
+  description: t.metaDesc,
+  url: canonical,
+  siteName: SITE_NAME,
+  images: [
+    {
+      url: `${SITE_URL}/og-image.png`,
+      width: 1200,
+      height: 630,
+    },
+  ],
+},
+twitter: {
+  card: "summary_large_image",
+  title: `${t.title} - ${SITE_NAME}`,
+  description: t.metaDesc,
+  images: [`${SITE_URL}/og-image.png`],
+},
   };
 }
 
 export  default async function FeedsDirectoryPage({ params }) {
-  const {locale} =await params || "en";
+  const { locale = "en" } = await params;
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const t = LOCALIZED_FEEDS_TEXT[currentLocale] || LOCALIZED_FEEDS_TEXT["en"];
 
   // Mapping out URLs cleanly using architecture specified
-  const generateFeedDataSet = (type) => {
-    return VALID_LOCALES.map((loc) => {
-      const prefix = loc === "en" ? "" : `/${loc}`;
-      
-      const xmlUrl = `${SITE_URL}/feeds/${type}/${loc}`;
-      const htmlUrl = type === "news"
-        ? (loc === "en" ? SITE_URL : `${SITE_URL}/${loc}`)
-        : `${SITE_URL}${prefix}/events`;
+const generateFeedDataSet = (type) => {
+  return VALID_LOCALES.map((loc) => {
+    const prefix = loc === "en" ? "" : `/${loc}`;
 
-      return {
-        localeName: loc.toUpperCase(),
-        xmlUrl,
-        htmlUrl,
-        label: `${SITE_NAME} — ${type} (${loc.toUpperCase()})`
-      };
-    });
-  };
+    // ✅ FIX — matches actual OPML file URL pattern:
+    // en   -> /rss/news.xml or /rss/events.xml
+    // other-> /rss/news/{loc}.xml or /rss/events/{loc}.xml
+    const xmlUrl = loc === "en"
+      ? `${SITE_URL}/feeds/${type}.xml`
+      : `${SITE_URL}/feeds/${type}/${loc}.xml`;
+
+    const htmlUrl = type === "news"
+      ? `${SITE_URL}/feeds/${type}.xml`
+      : `${SITE_URL}/feeds/${type}/${loc}.xml`;
+
+    return {
+      localeName: loc.toUpperCase(),
+      xmlUrl,
+      htmlUrl,
+      label: `${SITE_NAME} — ${type} (${loc.toUpperCase()})`
+    };
+  });
+};
 
   const newsFeeds = generateFeedDataSet("news");
   const eventsFeeds = generateFeedDataSet("events");
@@ -186,10 +225,30 @@ export  default async function FeedsDirectoryPage({ params }) {
       });
     }
   `;
-
+const canonical =
+  currentLocale === "en"
+    ? `${SITE_URL}/rss`
+    : `${SITE_URL}/${currentLocale}/rss`;
   return (
     <>
-      <Script id="copy-engine" dangerouslySetInnerHTML={{ __html: inlineCopyScript }} />
+    <Script
+  id="feeds-jsonld"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: t.title,
+      url: canonical,
+      description: t.metaDesc,
+      publisher: {
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: SITE_URL
+      }
+    })
+  }}
+/>
       
       <main 
         className="min-h-screen bg-white dark:bg-[#0d1117] text-gray-900 dark:text-gray-100 py-16 md:py-24 transition-colors duration-200"
@@ -223,7 +282,7 @@ export  default async function FeedsDirectoryPage({ params }) {
               </p>
             </div>
             <a 
-              href="/feeds.xml" 
+              href="/rss.xml" 
               download="cryptonewstrend-all-feeds.opml"
               className="w-full md:w-auto text-center px-6 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl tracking-wide shadow-lg shadow-orange-500/10 transition-all duration-150 active:scale-95"
             >
@@ -255,16 +314,8 @@ export  default async function FeedsDirectoryPage({ params }) {
                     <Link href={feed.htmlUrl} className="p-2 text-xs font-medium text-gray-500 hover:text-orange-500 dark:text-gray-400 dark:hover:text-orange-400 transition-colors">
                       {t.visitBtn}
                     </Link>
-                    <button 
-                      onClick={typeof window !== 'undefined' ? () => window.copyFeedUrl(this, feed.xmlUrl) : undefined}
-                      className="copy-btn px-3 py-1.5 text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-orange-500 dark:hover:bg-orange-500 hover:text-white transition-all font-sans"
-                      data-orig={t.copyBtn}
-                      data-copied={t.copiedText}
-                      // Binding native call fallback via simple string execution on layout level
-                      onclick={`copyFeedUrl(this, '${feed.xmlUrl}')`}
-                    >
-                      {t.copyBtn}
-                    </button>
+                   <CopyFeedButton url={feed.xmlUrl} label={t.copyBtn} copiedLabel={t.copiedText} />
+
                   </div>
                 </div>
               ))}
@@ -295,14 +346,8 @@ export  default async function FeedsDirectoryPage({ params }) {
                     <Link href={feed.htmlUrl} className="p-2 text-xs font-medium text-gray-500 hover:text-orange-500 dark:text-gray-400 dark:hover:text-orange-400 transition-colors">
                       {t.visitBtn}
                     </Link>
-                    <button 
-                      className="copy-btn px-3 py-1.5 text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-orange-500 dark:hover:bg-orange-500 hover:text-white transition-all font-sans"
-                      data-orig={t.copyBtn}
-                      data-copied={t.copiedText}
-                      onclick={`copyFeedUrl(this, '${feed.xmlUrl}')`}
-                    >
-                      {t.copyBtn}
-                    </button>
+                <CopyFeedButton url={feed.xmlUrl} label={t.copyBtn} copiedLabel={t.copiedText} />
+
                   </div>
                 </div>
               ))}

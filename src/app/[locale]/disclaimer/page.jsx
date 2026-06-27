@@ -170,27 +170,58 @@ const LOCALIZED_DISCLAIMER = {
 };
 
 export async function generateMetadata({ params }) {
-  const {locale} =await params || "en";
+const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
+  const currentMeta = LOCALIZED_DISCLAIMER[locale] || LOCALIZED_DISCLAIMER.en;
 
   const canonical =
     currentLocale === "en"
       ? `${SITE_URL}/disclaimer`
       : `${SITE_URL}/${currentLocale}/disclaimer`;
 
+  function buildUrl(locale, path = "") {
+  const base = locale === "en"
+    ? SITE_URL
+    : `${SITE_URL}/${locale}`;
+
+  return `${base}/${path}`;
+}
+
+function buildAlternates(path) {
+  const languages = {};
+
+  VALID_LOCALES.forEach((locale) => {
+    languages[locale] = buildUrl(locale, path);
+  });
+
+  languages["x-default"] = buildUrl("en", path);
+
+  return languages;
+}
+
   return {
-    title: `Financial Disclaimer - ${SITE_NAME}`,
-    description: `Official corporate, legal, and risk exclusion disclaimer for ${SITE_NAME}. Read about cryptocurrency data telemetry warranties, compliance parameters, and absolute limitation of liability structures.`,
+    title: currentMeta.title,
+    description: currentMeta.description,
     robots: {
       index: true,
       follow: true,
     },
     alternates: {
       canonical,
+        languages: buildAlternates("disclaimer"),
+
     },
+    twitter: {
+  card: "summary_large_image",
+  title: "Financial Disclaimer",
+  description:
+    "Official corporate, legal, and risk exclusion disclaimer for CryptoNewsTrend.",
+  images: [`${SITE_URL}/og-image.png`],
+},
     openGraph: {
       type: "website",
-      title: `Financial Disclaimer - ${SITE_NAME}`,
+      title: `Financial Disclaimer `,
       description: `Corporate investment risk exclusion parameters and systemic non-warranty legal limits for ${SITE_NAME}.`,
       url: canonical,
       siteName: SITE_NAME,
@@ -206,7 +237,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function DisclaimerPage({ params }) {
-  const {locale} =await params || "en";
+const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const prefix = currentLocale === "en" ? "" : `/${currentLocale}`;
@@ -220,18 +252,39 @@ export default async function DisclaimerPage({ params }) {
         id="disclaimer-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: t.title,
-            url: pageUrl,
-            description: `Official systemic risk disclaimer and legal notice document issued by ${SITE_NAME} network.`,
-            publisher: {
-              "@type": "Organization",
-              name: SITE_NAME,
-              url: SITE_URL
-            }
-          })
+          __html: JSON.stringify(
+
+
+            {
+ "@context":"https://schema.org",
+ "@type":"WebPage",
+ "name":"Financial Disclaimer",
+ "url":"https://cryptonewstrend.com/disclaimer",
+ "isPartOf":{
+   "@type":"WebSite",
+   "name":"CryptoNewsTrend",
+   "url":"https://cryptonewstrend.com"
+ }
+},
+{
+ "@context":"https://schema.org",
+ "@type":"BreadcrumbList",
+ "itemListElement":[
+   {
+     "@type":"ListItem",
+     "position":1,
+     "name":"Home",
+     "item":"https://cryptonewstrend.com"
+   },
+   {
+     "@type":"ListItem",
+     "position":2,
+     "name":"Disclaimer",
+     "item":"https://cryptonewstrend.com/disclaimer"
+   }
+ ]
+}
+          )
         }}
       />
       

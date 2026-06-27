@@ -98,6 +98,8 @@ function buildUrl(locale, path = "privacy-policy") {
 export async function generateMetadata({ params }) {
   const {locale}=await params
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
+    const t = LOCALIZED_CONTENT[currentLocale] || LOCALIZED_CONTENT["en"];
+
   const canonicalUrl = buildUrl(currentLocale);
 
   const languages = {};
@@ -107,7 +109,7 @@ export async function generateMetadata({ params }) {
   languages["x-default"] = `${SITE_URL}/privacy-policy`;
 
   return {
-    title: `Privacy Policy | ${SITE_NAME}`,
+    title: t.title,
     description: `Read the ${SITE_NAME} Privacy Policy. Learn how we securely collect, manage, and process user data under GDPR and CCPA frameworks while serving global crypto market insights.`,
     alternates: {
       canonical: canonicalUrl,
@@ -135,48 +137,64 @@ export default async function PrivacyPolicyPage({ params }) {
   // Safe direct internal fallbacks assignment context lookup 
   const t = LOCALIZED_CONTENT[currentLocale] || LOCALIZED_CONTENT["en"];
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebPage",
-        "@id": `${pageUrl}/#webpage`,
-        url: pageUrl,
-        name: `Privacy Policy - ${SITE_NAME}`,
-        description: `Privacy policy guidelines, compliance data protocols, and legal rights explanations for visitors of ${SITE_NAME}.`,
-        inLanguage: currentLangCode,
-        isPartOf: {
-          "@id": `${SITE_URL}/#website`,
+ const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${pageUrl}#webpage`,
+      "url": pageUrl,
+      "name": `${t.title} | ${SITE_NAME}`,
+      "description": `Privacy policy guidelines, compliance data protocols, and legal rights explanations for visitors of ${SITE_NAME}.`,
+      "inLanguage": currentLangCode,
+      "isPartOf": {
+        "@id": `${SITE_URL}/#website`
+      },
+      "publisher": {
+        "@id": `${SITE_URL}/#organization`
+      },
+      "breadcrumb": {
+        "@id": `${pageUrl}#breadcrumb`
+      }
+    },
+
+    {
+      "@type": "AboutPage",
+      "@id": `${pageUrl}#aboutpage`,
+      "url": pageUrl,
+      "name": `${t.title}`,
+      "mainEntity": {
+        "@type": "Thing",
+        "name": "Privacy Policy"
+      },
+      "inLanguage": currentLangCode,
+      "isPartOf": {
+        "@id": `${SITE_URL}/#website`
+      }
+    },
+
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${pageUrl}#breadcrumb`,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": currentLocale === "en"
+            ? SITE_URL
+            : `${SITE_URL}/${currentLocale}`
         },
-        publisher: {
-          "@id": `${SITE_URL}/#organization`,
-        },
-        datePublished: "2025-01-01T00:00:00Z",
-        dateModified: "2026-06-16T00:00:00Z",
-        breadcrumb: {
-          "@id": `${pageUrl}/#breadcrumb`
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Privacy Policy",
+          "item": pageUrl
         }
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${pageUrl}/#breadcrumb`,
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Home",
-            item: SITE_URL,
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: "Privacy Policy",
-            item: pageUrl,
-          },
-        ],
-      },
-    ],
-  };
+      ]
+    }
+  ]
+}
 
   return (
     <main 

@@ -254,8 +254,9 @@ const ABOUT_DICT = {
 };
 
 export async function generateMetadata({ params }) {
-  const { locale: raw } = await params || "en";
+  const { locale: raw } = await params || {};
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
+
   const currentMeta = META[locale] || META.en;
 
   const canonical =
@@ -263,30 +264,57 @@ export async function generateMetadata({ params }) {
       ? `${SITE_URL}/about-us`
       : `${SITE_URL}/${locale}/about-us`;
 
+  const languages = {};
+
+  VALID_LOCALES.forEach((loc) => {
+    languages[loc] =
+      loc === "en"
+        ? `${SITE_URL}/about-us`
+        : `${SITE_URL}/${loc}/about-us`;
+  });
+
+  languages["x-default"] = `${SITE_URL}/about-us`;
+
   return {
+    metadataBase: new URL(SITE_URL),
+
     title: currentMeta.title,
     description: currentMeta.desc,
+
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
     },
+
     alternates: {
       canonical,
+      languages,
     },
+
     openGraph: {
       type: "website",
-      title: currentMeta.title,
-      description: currentMeta.desc,
       url: canonical,
       siteName: "CryptoNewsTrend",
+      title: currentMeta.title,
+      description: currentMeta.desc,
+      locale,
       images: [
         {
           url: `${SITE_URL}/og-image.png`,
           width: 1200,
           height: 630,
+          alt: "CryptoNewsTrend",
         },
       ],
     },
+
     twitter: {
       card: "summary_large_image",
       title: currentMeta.title,
@@ -316,7 +344,8 @@ const LANGS = [
   { code: "ZH", name: "中文"     },
 ];
 export default async function AboutPage({ params }) {
-  const { locale: raw } = await params || "en";
+  const resolvedParams = await params;
+  const locale = resolvedParams?.locale || "en";
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const isRtl  = ["ur", "ar"].includes(locale);
   const prefix = locale === "en" ? "" : `/${locale}`;
@@ -325,17 +354,119 @@ export default async function AboutPage({ params }) {
   const t = ABOUT_DICT[locale] || ABOUT_DICT.en;
 
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "NewsMediaOrganization",
-    name: "CryptoNewsTrend",
-    url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
-    description: META[locale]?.desc || META.en.desc,
-    sameAs: ["https://twitter.com/cryptonewstrend", "https://t.me/cryptonewstrend"],
-    foundingDate: "2024",
-    areaServed: "Worldwide",
-    inLanguage: ["en", "ur", "ar", "es", "fr", "de", "ru", "zh"],
-  };
+  "@context": "https://schema.org",
+  "@type": "NewsMediaOrganization",
+
+  "@id": `${SITE_URL}/#organization`,
+
+  name: "CryptoNewsTrend",
+founder: {
+  "@type": "Person",
+  name: "CryptoNewsTrend Editorial Team"
+},
+
+foundingLocation: {
+  "@type": "Place",
+  name: "Global"
+},
+
+knowsAbout: [
+  "Bitcoin",
+  "Ethereum",
+  "Cryptocurrency News",
+  "Blockchain",
+  "ICO Analysis",
+  "Crypto Whale Tracking"
+],
+  url: SITE_URL,
+
+  logo: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/logo.png`,
+    width: 600,
+    height: 60,
+  },
+
+  description: META[locale]?.desc || META.en.desc,
+
+  sameAs: [
+    "https://twitter.com/cryptonewstrend",
+    "https://t.me/cryptonewstrend",
+  ],
+
+  foundingDate: "2024",
+
+  areaServed: "Worldwide",
+
+  inLanguage: [
+    "en",
+    "ur",
+    "ar",
+    "es",
+    "fr",
+    "de",
+    "ru",
+    "zh",
+  ],
+
+  publishingPrinciples: `${SITE_URL}/editorial-policy`,
+  ethicsPolicy: `${SITE_URL}/editorial-policy`,
+  correctionsPolicy: `${SITE_URL}/editorial-policy`,
+
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    url: `${SITE_URL}/contact`,
+  },
+};
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item:
+        locale === "en"
+          ? SITE_URL
+          : `${SITE_URL}/${locale}`,
+    },
+
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "About Us",
+      item:
+        locale === "en"
+          ? `${SITE_URL}/about-us`
+          : `${SITE_URL}/${locale}/about-us`,
+    },
+  ],
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What is CryptoNewsTrend?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "CryptoNewsTrend is a multilingual cryptocurrency news and market intelligence platform."
+      }
+    },
+    {
+      "@type": "Question",
+      name: "Does CryptoNewsTrend accept paid news placements?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. CryptoNewsTrend follows an independent editorial policy."
+      }
+    }
+  ]
+};
 
   // Raw original static arrays mapped with local translated text values
   const STAT_VALUES = ["8", "24/7", "20+", "100%"];
@@ -346,11 +477,44 @@ export default async function AboutPage({ params }) {
 
   return (
     <>
+
       <Script
         type="application/ld+json"
         id="organization-jsonld"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <Script
+  id="aboutpage-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      url: `${SITE_URL}${prefix}/about-us`,
+      name: META[locale]?.title,
+      description: META[locale]?.desc,
+      isPartOf: {
+        "@type": "WebSite",
+        name: "CryptoNewsTrend",
+        url: SITE_URL
+      }
+    })
+  }}
+/>
+      <Script
+  id="breadcrumb-jsonld"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(breadcrumbJsonLd),
+  }}
+/>
+    <Script
+  id="faqSchema-jsonld"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(faqSchema),
+  }}
+/>
       <Script
         type="application/ld+json"
         id="webpage-jsonld"
@@ -359,6 +523,17 @@ export default async function AboutPage({ params }) {
             "@context": "https://schema.org",
             "@type": "WebPage",
             name: t.missionTitle,
+            mainEntity: {
+  "@id": `${SITE_URL}/#organization`,
+},
+
+breadcrumb: {
+  "@type": "BreadcrumbList",
+},
+
+lastReviewed: "2026-06-26",
+
+inLanguage: locale,
             url: `${SITE_URL}${prefix}/about-us`,
             description: META[locale]?.desc || META.en.desc,
             publisher: {
@@ -407,6 +582,20 @@ export default async function AboutPage({ params }) {
           </div>
         </section>
 
+<section className="py-16 border-b">
+  <div className="container mx-auto px-4 max-w-4xl">
+    <h2 className="text-2xl font-bold mb-6">
+      Editorial Team
+    </h2>
+
+    <p className="text-gray-600 dark:text-gray-400">
+      CryptoNewsTrend is operated by editors,
+      researchers, blockchain analysts and
+      contributors focused on cryptocurrency,
+      blockchain technology and digital assets.
+    </p>
+  </div>
+</section>
         {/* ── What we cover ── */}
         <section className="py-16 border-b border-gray-200 dark:border-gray-800/80">
           <div className="container mx-auto px-4 max-w-5xl">
@@ -493,6 +682,20 @@ export default async function AboutPage({ params }) {
             </div>
           </div>
         </section>
+<section className="py-16 border-b">
+  <div className="container mx-auto px-4 max-w-4xl">
+    <h2 className="text-2xl font-bold mb-4">
+      Contact Information
+    </h2>
+
+    <p>Email: contact@cryptonewstrend.com</p>
+
+    <p>
+      Website:
+      https://cryptonewstrend.com
+    </p>
+  </div>
+</section>
 
         {/* ── CTA ── */}
         <section className="py-16">
@@ -508,7 +711,26 @@ export default async function AboutPage({ params }) {
               {t.ctaBtn}
             </Link>
           </div>
+
+          <section className="flex flex-wrap gap-3 mt-8  justify-center">
+  <Link href={`${prefix}/editorial-policy`}>
+    Editorial Policy
+  </Link>
+
+  <Link href={`${prefix}/contact`}>
+    Contact
+  </Link>
+
+  <Link href={`${prefix}/privacy-policy`}>
+    Privacy Policy
+  </Link>
+
+  <Link href={`${prefix}/terms`}>
+    Terms & Conditions
+  </Link>
+</section>
         </section>
+        
       </main>
     </>
   );

@@ -350,6 +350,9 @@ export default async function NewsSlugPage({ params }) {
         dateModified,
         breadcrumb: { "@id": `${canonicalUrl}#breadcrumb` },
       },
+
+  
+  
     ],
   };
 

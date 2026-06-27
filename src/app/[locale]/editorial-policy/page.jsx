@@ -6,35 +6,35 @@ const VALID_LOCALES = ["en", "ur", "es", "ru", "fr", "de", "ar", "zh"];
 // ── Per-locale SEO Metadata ─────────────────────────────
 const META = {
   en: {
-    title: "Editorial Policy - CryptoNewsTrend | Journalism Standards",
+    title: "Editorial Policy | Journalism Standards",
     desc: "Learn how CryptoNewsTrend ensures accurate, independent, and transparent crypto journalism through strict verification processes.",
   },
   ur: {
-    title: "ادارتی پالیسی - CryptoNewsTrend",
+    title: "ادارتی پالیسی ",
     desc: "جانیں کہ کس طرح CryptoNewsTrend سخت تصدیقی عمل کے ذریعے درست، آزاد اور شفاف کرپٹو صحافت کو یقینی بناتا ہے۔",
   },
   ar: {
-    title: "السياسة التحريرية - CryptoNewsTrend | معايير الصحافة",
+    title: "السياسة التحريرية - | معايير الصحافة",
     desc: "تعرف على كيفية ضمان CryptoNewsTrend لصحافة عملات رقمية دقيقة ومستقلة وشفافة من خلال عمليات تحقق صارمة.",
   },
   es: {
-    title: "Política Editorial - CryptoNewsTrend | Estándares de Periodismo",
+    title: "Política Editorial | Estándares de Periodismo",
     desc: "Conozca cómo CryptoNewsTrend garantiza un periodismo de criptomonedas preciso, independiente y transparente.",
   },
   fr: {
-    title: "Politique Éditoriale - CryptoNewsTrend | Normes Journalistiques",
+    title: "Politique Éditoriale | Normes Journalistiques",
     desc: "Découvrez comment CryptoNewsTrend garantit un journalisme crypto précis, indépendant et transparent.",
   },
   de: {
-    title: "Redaktionelle Richtlinien - CryptoNewsTrend",
+    title: "Redaktionelle Richtlinien",
     desc: "Erfahren Sie, wie CryptoNewsTrend durch strenge Verifizierungsprozesse einen präzisen und unabhängigen Krypto-Journalismus gewährleistet.",
   },
   ru: {
-    title: "Редакционная Политика - CryptoNewsTrend | Стандарты Журналистики",
+    title: "Редакционная Политика | Стандарты Журналистики",
     desc: "Узнайте, как CryptoNewsTrend обеспечивает точную, независимую и прозрачную криптожурналистику.",
   },
   zh: {
-    title: "编辑政策 - CryptoNewsTrend | 新闻规范",
+    title: "编辑政策 | 新闻规范",
     desc: "了解 CryptoNewsTrend 如何通过严格的审核流程确保准确、独立和透明的加密货币新闻报道。"
   }
 };
@@ -260,7 +260,7 @@ const POLICY_DICT = {
 };
 
 export async function generateMetadata({ params }) {
-  const { locale: raw } = await params || "en";
+  const { locale: raw } = await params;
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const currentMeta = META[locale] || META.en;
 
@@ -277,10 +277,21 @@ export async function generateMetadata({ params }) {
       follow: true,
     },
     alternates: {
-      canonical,
-    },
+  canonical,
+  languages: {
+    en: `${SITE_URL}/editorial-policy`,
+    ur: `${SITE_URL}/ur/editorial-policy`,
+    es: `${SITE_URL}/es/editorial-policy`,
+    ru: `${SITE_URL}/ru/editorial-policy`,
+    fr: `${SITE_URL}/fr/editorial-policy`,
+    de: `${SITE_URL}/de/editorial-policy`,
+    ar: `${SITE_URL}/ar/editorial-policy`,
+    zh: `${SITE_URL}/zh/editorial-policy`,
+    "x-default": `${SITE_URL}/editorial-policy`,
+  },
+},
     openGraph: {
-      type: "article",
+      type: "website",
       title: currentMeta.title,
       description: currentMeta.desc,
       url: canonical,
@@ -303,7 +314,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function EditorialPolicyPage({ params }) {
-  const { locale: raw } = await params || "en";
+  const { locale: raw } = await params;
   const locale = VALID_LOCALES.includes(raw) ? raw : "en";
   const isRtl = ["ur", "ar"].includes(locale);
   
@@ -316,17 +327,17 @@ export default async function EditorialPolicyPage({ params }) {
         id="editorial-policy-jsonld"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: t.h1,
-            url: locale === "en" ? `${SITE_URL}/editorial-policy` : `${SITE_URL}/${locale}/editorial-policy`,
-            description: META[locale]?.desc || META.en.desc,
-            publisher: {
-              "@type": "Organization",
-              name: "CryptoNewsTrend",
-              url: SITE_URL
-            }
-          })
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": t.h1,
+  "url": canonical,
+  "description": currentMeta.desc,
+  "publisher": {
+    "@type": "Organization",
+    "name": "CryptoNewsTrend",
+    "url": SITE_URL
+  }
+})
         }}
       />
       

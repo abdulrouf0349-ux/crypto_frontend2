@@ -72,7 +72,7 @@ export async function generateMetadata({ params, searchParams }) {
   // const locale = VALID_LOCALES.includes(params.locale) ? params.locale : "en";
   const canonical = buildCanonical(currentLocale);
   const { title, description, keywords } = getCopy(currentLocale);
-  const ogImage = `${SITE_URL}/crypto-glossary.png`;
+  const ogImage = `${SITE_URL}/og-glossary.png`;
 
   const alternateLanguages = { "x-default": buildCanonical("en") };
   VALID_LOCALES.forEach((loc) => {
@@ -80,9 +80,9 @@ export async function generateMetadata({ params, searchParams }) {
   });
 
   // ✅ Noindex dynamic search/filter URLs to prevent duplicate content
-  const hasSearchParam = !!searchParams?.search;
-  const hasTypeParam = searchParams?.type && searchParams.type !== "all";
-  const hasPageParam = Number(searchParams?.page) > 1;
+  const hasSearchParam =await !!searchParams?.search;
+  const hasTypeParam =await searchParams?.type && searchParams.type !== "all";
+  const hasPageParam = Number(await searchParams?.page) > 1;
   const isDynamic = hasSearchParam || hasTypeParam || hasPageParam;
 
   return {
@@ -102,7 +102,7 @@ export async function generateMetadata({ params, searchParams }) {
     },
 
     openGraph: {
-      type: "website",
+      type: "article",
       url: canonical,
       siteName: SITE_NAME,
       title,
@@ -137,9 +137,9 @@ export default async function GlossaryPage({ params, searchParams }) {
   const getSlug = (coin) =>
     coin.slug || coin.id || encodeURIComponent(coin.name || "asset");
 
-  const search = searchParams?.search || "";
-  const type = searchParams?.type || "all";
-  const page = Number(searchParams?.page) || 1;
+  const search =await searchParams?.search || "";
+  const type = await searchParams?.type || "all";
+  const page = Number(await searchParams?.page) || 1;
 
   let initialData = [];
   let initialTotalPages = 1;
@@ -273,6 +273,29 @@ export default async function GlossaryPage({ params, searchParams }) {
 
   return (
     <>
+    <Script
+  id="glossary-definedtermset"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "DefinedTermSet",
+      name: "Crypto Glossary",
+      description:
+        "500+ cryptocurrency, blockchain, Bitcoin, Ethereum, NFT, Web3 and DeFi terms explained with definitions and examples.",
+      url: "https://cryptonewstrend.com/glossary",
+      publisher: {
+        "@type": "Organization",
+        name: "CryptoNewsTrend",
+        url: "https://cryptonewstrend.com",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://cryptonewstrend.com/logo.png"
+        }
+      }
+    })
+  }}
+/>
       <Script
         id="glossary-jsonld"
         type="application/ld+json"

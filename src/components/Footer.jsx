@@ -62,7 +62,7 @@ export function Footer() {
             <h4 className="font-bold mb-4 font-display text-white">{t("footer.resources")}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li><Link href="/sitemaps-directory" className="hover:text-purple-400 transition-colors">{t("footer.sitemap")}</Link></li>
-              <li><Link href="/feeds" className="hover:text-purple-400 transition-colors">{t("footer.rssFeed")}</Link></li>
+              <li><Link href="/rss" className="hover:text-purple-400 transition-colors">{t("footer.rssFeed")}</Link></li>
               <li><Link href="/advertise" className="hover:text-purple-400 transition-colors">{t("footer.advertise")}</Link></li>
               <li><Link href="/disclaimer" className="hover:text-purple-400 transition-colors">{t("footer.disclaimer")}</Link></li>
               <li><Link href="/team" className="hover:text-purple-400 transition-colors">{t("footer.teams")}</Link></li>

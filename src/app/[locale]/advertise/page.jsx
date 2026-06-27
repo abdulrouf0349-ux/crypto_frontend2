@@ -219,7 +219,8 @@ const LOCALIZED_ADVERTISE = {
 };
 
 export async function generateMetadata({ params }) {
-  const {locale} =await params || "en";
+  const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
 
   const canonical =
@@ -228,21 +229,36 @@ export async function generateMetadata({ params }) {
       : `${SITE_URL}/${currentLocale}/advertise`;
 
   return {
-    title: `Advertise & Sponsorships | ${SITE_NAME}`,
-    description: `Promote your Web3 startup, DeFi protocol, or token presale on ${SITE_NAME}. Reach millions of active crypto investors, traders, and high-net-worth market whales globally.`,
+    title: `Advertise & Sponsorships`,
+    description: `Promote your Web3 startup, DeFi protocol, or token project on ${SITE_NAME}. Reach crypto investors, traders, developers, and blockchain enthusiasts worldwide.`,
+
     robots: {
       index: true,
       follow: true,
     },
+
     alternates: {
       canonical,
+      languages: {
+        en: `${SITE_URL}/advertise`,
+        ur: `${SITE_URL}/ur/advertise`,
+        es: `${SITE_URL}/es/advertise`,
+        ru: `${SITE_URL}/ru/advertise`,
+        fr: `${SITE_URL}/fr/advertise`,
+        de: `${SITE_URL}/de/advertise`,
+        ar: `${SITE_URL}/ar/advertise`,
+        zh: `${SITE_URL}/zh/advertise`,
+        "x-default": `${SITE_URL}/advertise`,
+      },
     },
+
     openGraph: {
       type: "website",
-      title: `Advertise & Media Kit - ${SITE_NAME}`,
-      description: `Premium target media solutions, banner takeovers, and sponsored crypto press releases on ${SITE_NAME}.`,
       url: canonical,
       siteName: SITE_NAME,
+      title: `Advertise & Media Kit | ${SITE_NAME}`,
+      description:
+        "Premium advertising opportunities, sponsored content, banner placements and crypto media exposure.",
       images: [
         {
           url: `${SITE_URL}/og-image.png`,
@@ -250,12 +266,22 @@ export async function generateMetadata({ params }) {
           height: 630,
         },
       ],
+      locale: currentLocale,
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: `Advertise & Media Kit | ${SITE_NAME}`,
+      description:
+        "Premium advertising opportunities, sponsored content, banner placements and crypto media exposure.",
+      images: [`${SITE_URL}/og-image.png`],
     },
   };
 }
 
 export default async function AdvertisePage({ params }) {
-  const {locale} =await params || "en";
+  const resolvedParams = await params;
+const locale = resolvedParams?.locale || "en";
   const currentLocale = VALID_LOCALES.includes(locale) ? locale : "en";
   const isRtl = ["ur", "ar"].includes(currentLocale);
   const prefix = currentLocale === "en" ? "" : `/${currentLocale}`;
@@ -270,16 +296,26 @@ export default async function AdvertisePage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: t.title,
-            url: pageUrl,
-            description: `Official media kit, advertising spaces, traffic analytics, and compliance onboarding protocols for ${SITE_NAME}.`,
-            publisher: {
-              "@type": "Organization",
-              name: SITE_NAME,
-              url: SITE_URL
-            }
+
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": t.title,
+  "url": pageUrl,
+  "inLanguage": currentLocale,
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": SITE_NAME,
+    "url": SITE_URL
+  },
+  "publisher": {
+  "@type": "Organization",
+  "name": SITE_NAME,
+  "url": SITE_URL,
+  "logo": {
+    "@type": "ImageObject",
+    "url": `${SITE_URL}/logo.png`
+  }
+}
           })
         }}
       />

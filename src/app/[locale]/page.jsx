@@ -68,10 +68,11 @@ const OG_LOCALE_MAP = {
   en: "en_US", ur: "ur_PK", es: "es_ES", ru: "ru_RU",
   fr: "fr_FR", de: "de_DE", ar: "ar_SA", zh: "zh_CN",
 };
-
+// ✅ FIXED — matches layout.jsx's buildUrl exactly, no trailing slash
 function buildPageUrl(locale) {
-  return locale === "en" ? `${SITE_URL}/` : `${SITE_URL}/${locale}/`;
+  return locale === "en" ? SITE_URL : `${SITE_URL}/${locale}`;
 }
+
 
 function buildAlternates() {
   const languages = {};

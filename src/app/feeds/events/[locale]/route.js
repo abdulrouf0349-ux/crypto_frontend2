@@ -26,7 +26,7 @@ async function fetchItems(locale) {
   try {
     const apiLocale = toApiLocale(locale);
     const res = await fetch(`${BASE_API}/api/get-events/${apiLocale}/?page=1`, {
-      next: { revalidate: REVALIDATE_EVENTS_FEED, tags: ["events", `${locale}-events`] },
+      next: { revalidate: 43200, tags: ["events", `${locale}-events`] },
     });
     if (!res.ok) return [];
     const result = await res.json();

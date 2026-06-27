@@ -161,7 +161,7 @@ export async function generateMetadata({ params }) {
   const coinSuffix  = coin && coin.toUpperCase() !== blockchain.toUpperCase() ? ` ${coin}` : "";
 // Fallback: use shortened hash if amountFull is missing
 const displayAmount = amountFull || `TX ${hash.slice(0, 8)}`;
-const seoTitle = `${displayAmount}${coinSuffix} ${blockchain} Whale Alert — ${new Date(publishedAt).getFullYear()}`;
+const seoTitle= `${displayAmount}${coinSuffix} ${blockchain} Whale Alert — ${new Date(publishedAt).getFullYear()}`;
   // ── OG image — use tx image or fallback OG ────────────────
   const ogImage = tx.image_url || `${SITE_URL}/og-whale-tracker.png`;
 
